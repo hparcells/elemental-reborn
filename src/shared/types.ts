@@ -31,14 +31,17 @@ export interface Suggestion {
   /** Array of user IDs from people who votes. */
   votes: string[];
 }
-/** An element. */
-export interface Element {
+/** Client stored element data. */
+export interface SimpleElement {
   /** Unique number ID of this element. */
   id: number;
   /** The name of the element. */
   name: string;
   /** The color of the element. */
   color: ElementColor;
+}
+/** An element. */
+export interface Element extends SimpleElement {
   /** Parent element that will make this element. */
   parent1: Element;
   /** Parent element that will make this element. */

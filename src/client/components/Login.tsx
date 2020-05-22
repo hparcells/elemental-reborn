@@ -34,9 +34,9 @@ function Login({ handleLogin }: { handleLogin: (googleUser: any) => void }) {
           onFailure={onLoginError}
         />
 
-        <p style={{ fontSize: '12px', marginTop: '6em' }}>
+        <p style={{ fontSize: '12px' }}>
           This game is not officially affiliated with carykh's Elemental games, and none of your
-          personal information (e.g. email address, name, IP... etc.) will be stored.
+          personal information (e.g. email address, name, IP, etc.) will be stored.
         </p>
       </div>
 
