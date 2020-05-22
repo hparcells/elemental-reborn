@@ -2,6 +2,10 @@
     "version": "0.1",
     "ignoreWords": [
         "elementalreborncluster",
-        "hparcells"
+        "googleusercontent",
+        "hparcells",
+        "iqacd",
+        "otormactiabvs",
+        "signin"
     ]
 }
