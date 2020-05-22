@@ -1,19 +1,26 @@
 import React from 'react';
 import { best } from 'wcag-color';
+import EditableLabel from 'react-inline-editing';
 
 import { SimpleElement, ELEMENT_COLOR_MAP } from '../../shared/types';
 
 function Element({
   element,
+  editable,
+  handleEditTextChange,
   handleElementClick,
   style
 }: {
   element: SimpleElement;
-  handleElementClick: (id: number) => void;
+  editable?: boolean;
+  handleEditTextChange?: (text: string) => void;
+  handleElementClick?: (id: number) => void;
   style?: any;
 }) {
   function handleClick() {
-    handleElementClick(element.id);
+    if (handleElementClick) {
+      handleElementClick(element.id);
+    }
   }
 
   return (
@@ -27,6 +34,8 @@ function Element({
         display: 'flex',
         justifyContent: 'center',
         userSelect: 'none',
+        boxShadow: 'rgba(0, 0, 0, 0.75) 0px 2px 3px 0px',
+        textAlign: 'center',
         ...style
       }}
       onClick={handleClick}
@@ -38,7 +47,11 @@ function Element({
           color: best('#ffffff', '#000000', ELEMENT_COLOR_MAP[element.color])
         }}
       >
-        {element.name}
+        {editable ? (
+          <EditableLabel text={element.name} onFocusOut={handleEditTextChange} />
+        ) : (
+          element.name
+        )}
       </span>
     </div>
   );

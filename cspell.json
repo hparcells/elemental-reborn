@@ -1,6 +1,8 @@
 {
     "version": "0.1",
     "ignoreWords": [
+        "downvoted",
+        "downvotes",
         "elementalreborncluster",
         "googleusercontent",
         "hparcells",
@@ -8,6 +10,7 @@
         "lyjw",
         "otormactiabvs",
         "signin",
+        "upvotes",
         "wcag"
     ]
 }

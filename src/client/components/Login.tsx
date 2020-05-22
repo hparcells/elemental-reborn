@@ -36,7 +36,8 @@ function Login({ handleLogin }: { handleLogin: (googleUser: any) => void }) {
 
         <p style={{ fontSize: '12px' }}>
           This game is not officially affiliated with carykh's Elemental games, and none of your
-          personal information (e.g. email address, name, IP, etc.) will be stored.
+          personal information (e.g. email address, IPs, etc.) will be stored, <em>however</em>,
+          your Google profile name will be displayed if elements you submit get voted through.
         </p>
       </div>
 

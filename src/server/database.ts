@@ -1,7 +1,7 @@
 import { MongoClient, Db } from 'mongodb';
 import assert from 'assert';
 
-import { ElementColor } from '../shared/types';
+import { ElementColor, Suggestion } from '../shared/types';
 
 export let database: Db;
 
@@ -34,6 +34,14 @@ export async function getChildId(parent1: number, parent2: number) {
       .project({ _id: false, child: true })
       .toArray()
   )[0].child;
+}
+async function suggestionExists(uuid: string) {
+  return (await database.collection('suggestions').find({ uuid }).count()) === 1;
+}
+export async function addSuggestion(suggestion: Suggestion) {
+  if (!(await suggestionExists(suggestion.uuid))) {
+    await database.collection('suggestions').insertOne(suggestion);
+  }
 }
 async function ensureDefaultElement(id: number, name: string, color: ElementColor) {
   if (!(await elementExists(id))) {

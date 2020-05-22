@@ -1,17 +1,21 @@
 import { app } from 'fullstack-system';
 import { config as setupDotEnv } from 'dotenv';
+import bodyParser from 'body-parser';
 
 import {
   setupDatabase,
   getSimpleElement,
   getElementCount,
   recipeExists,
-  getChildId
+  getChildId,
+  addSuggestion
 } from './database';
 
 setupDotEnv();
 
 setupDatabase();
+
+app.use(bodyParser());
 
 app.get('/api/element-count', async (req, res) => {
   res.send(`${await getElementCount()}`);
@@ -36,4 +40,8 @@ app.get('/api/get-recipe/:parent1/:parent2', async (req, res) => {
   }
   res.set({ Type: 'Suggest' });
   res.send();
+});
+app.post('/api/suggest', async (req, res) => {
+  addSuggestion(req.body.suggestion);
+  res.end();
 });

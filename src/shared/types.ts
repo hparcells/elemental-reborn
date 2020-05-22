@@ -22,14 +22,22 @@ export type ElementColor =
 
 /** Suggestion for a new element. */
 export interface Suggestion {
+  /** UUID. */
+  uuid: string;
+  /** The person who suggested the element. */
+  suggestedBy: string;
   /** Parent element that will make this element. */
-  parent1: Element;
+  parent1: number;
   /** Parent element that will make this element. */
-  parent2: Element;
+  parent2: number;
   /** The name of the element that will be formed. */
-  child: string;
+  childName: string;
+  /** The color of the element that will be formed. */
+  childColor: string;
   /** Array of user IDs from people who votes. */
-  votes: string[];
+  upvotes: string[];
+  /** Array of user IDs from people who downvoted. */
+  downvotes: string[];
 }
 /** Client stored element data. */
 export interface SimpleElement {
@@ -46,6 +54,8 @@ export interface Element extends SimpleElement {
   parent1: Element;
   /** Parent element that will make this element. */
   parent2: Element;
+  /** The person who suggested the element. */
+  suggestedBy: string;
   /** The user who got the final vote. */
   pioneer: string;
   /** The note provided by the pioneer. */
