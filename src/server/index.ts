@@ -1,7 +1,13 @@
 import { app } from 'fullstack-system';
 import { config as setupDotEnv } from 'dotenv';
 
-import { setupDatabase, getSimpleElement, getElementCount } from './database';
+import {
+  setupDatabase,
+  getSimpleElement,
+  getElementCount,
+  recipeExists,
+  getChildId
+} from './database';
 
 setupDotEnv();
 
@@ -17,4 +23,17 @@ app.get('/api/default-elements', async (req, res) => {
     await getSimpleElement(3),
     await getSimpleElement(4)
   ]);
+});
+app.get('/api/get-recipe/:parent1/:parent2', async (req, res) => {
+  if (await recipeExists(Number(req.params.parent1), Number(req.params.parent2))) {
+    res.set({ Type: 'Element' });
+    res.send(
+      await getSimpleElement(
+        await getChildId(Number(req.params.parent1), Number(req.params.parent2))
+      )
+    );
+    return;
+  }
+  res.set({ Type: 'Suggest' });
+  res.send();
 });

@@ -55,12 +55,12 @@ export interface Element extends SimpleElement {
 }
 /** A recipe for an element. */
 export interface Recipe {
-  /** Parent element that will make this element. */
-  parent1: Element;
-  /** Parent element that will make this element. */
-  parent2: Element;
-  /** The element that will be formed. */
-  child: Element;
+  /** Parent element ID that will make this element. */
+  parent1: number;
+  /** Parent element ID that will make this element. */
+  parent2: number;
+  /** The element ID that will be formed. */
+  child: number;
 }
 
 export const ELEMENT_COLOR_MAP: { [K in ElementColor]: string } = {

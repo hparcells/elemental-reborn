@@ -12,6 +12,7 @@
   "dependencies": {
     "@material-ui/core": "^4.9.14",
     "@material-ui/lab": "^4.0.0-alpha.53",
+    "@react-hook/mouse-position": "^3.2.2",
     "@reverse/array": "^1.7.3",
     "@types/mongodb": "^3.5.18",
     "axios": "^0.19.2",

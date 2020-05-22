@@ -23,6 +23,18 @@ export async function getSimpleElement(id: number) {
       .toArray()
   )[0];
 }
+export async function recipeExists(parent1: number, parent2: number) {
+  return (await database.collection('recipes').find({ parent1, parent2 }).count()) === 1;
+}
+export async function getChildId(parent1: number, parent2: number) {
+  return (
+    await database
+      .collection('recipes')
+      .find({ parent1, parent2 })
+      .project({ _id: false, child: true })
+      .toArray()
+  )[0].child;
+}
 async function ensureDefaultElement(id: number, name: string, color: ElementColor) {
   if (!(await elementExists(id))) {
     await database.collection('elements').insertOne({
@@ -52,7 +64,5 @@ export function setupDatabase() {
     ensureDefaultElement(2, 'Earth', 'brown');
     ensureDefaultElement(3, 'Fire', 'orange');
     ensureDefaultElement(4, 'Water', 'blue');
-
-    console.log('Database ready!');
   });
 }

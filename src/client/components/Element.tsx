@@ -3,7 +3,19 @@ import { best } from 'wcag-color';
 
 import { SimpleElement, ELEMENT_COLOR_MAP } from '../../shared/types';
 
-function Element({ element }: { element: SimpleElement }) {
+function Element({
+  element,
+  handleElementClick,
+  style
+}: {
+  element: SimpleElement;
+  handleElementClick: (id: number) => void;
+  style?: any;
+}) {
+  function handleClick() {
+    handleElementClick(element.id);
+  }
+
   return (
     <div
       style={{
@@ -11,10 +23,13 @@ function Element({ element }: { element: SimpleElement }) {
         height: '75px',
         borderRadius: '5px',
         backgroundColor: ELEMENT_COLOR_MAP[element.color],
-        margin: '1em',
+        margin: '0.25em',
         display: 'flex',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        userSelect: 'none',
+        ...style
       }}
+      onClick={handleClick}
     >
       <span
         style={{
