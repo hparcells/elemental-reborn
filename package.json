@@ -1,0 +1,28 @@
+{
+  "name": "elemental-reborn",
+  "description": "Yet another Elemental 3 clone. Combine elements to make more elements.",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "fullstack-system dev",
+    "dev": "fullstack-system dev",
+    "build": "fullstack-system build",
+    "clean": "fullstack-system clean",
+    "production": "fullstack-system production"
+  },
+  "dependencies": {
+    "@types/mongodb": "^3.5.18",
+    "dotenv": "^8.2.0",
+    "fullstack-system": "^2.8.2",
+    "mongodb": "^3.5.7",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^3.0.0",
+    "eslint": "^7.0.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "prettier": "^2.0.5",
+    "typescript": "^3.5.3"
+  }
+}
