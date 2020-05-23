@@ -91,7 +91,8 @@ function Game() {
     <div ref={ref} style={{ width: '100vw', height: '100vh' }}>
       <div style={{ padding: '0.5em' }}>
         <p>
-          {elements.length}/{elementCount} ({(elements.length / elementCount) * 100}%)
+          {elements.length}/{elementCount} (
+          {Number(((elements.length / elementCount) * 100).toFixed(2))}%)
         </p>
         {elements.length > 0 && obtainedColors.length > 0
           ? obtainedColors.map((color) => {

@@ -11,8 +11,14 @@ export async function getElementCount() {
 async function elementExists(id: number) {
   return (await database.collection('elements').find({ id }).count()) === 1;
 }
+async function elementExistsName(name: string) {
+  return (await database.collection('elements').find({ name }).count()) === 1;
+}
 export async function getElement(id: number) {
   return (await database.collection('elements').find({ id }).toArray())[0];
+}
+export async function getElementName(name: string) {
+  return (await database.collection('elements').find({ name }).toArray())[0];
 }
 export async function getSimpleElement(id: number) {
   return (
@@ -89,25 +95,32 @@ async function getSuggestion(uuid: string): Promise<Suggestion> {
 }
 async function endVoting(uuid: string, parent1: number, parent2: number, pioneer: string) {
   const winningSuggestion = await getSuggestion(uuid);
-  const id = (await getElementCount()) + 1;
 
-  await database.collection('elements').insertOne({
-    id,
-    name: winningSuggestion.childName,
-    color: winningSuggestion.childColor,
-    parent1: winningSuggestion.parent1,
-    parent2: winningSuggestion.parent2,
-    suggestedBy: winningSuggestion.suggestedBy,
-    pioneer,
-    pioneerNote: '',
-    createdOn: Date.now()
-  });
+  let newId;
+  if (elementExistsName(winningSuggestion.childName)) {
+    newId = (await getElementName(winningSuggestion.childName)).id;
+  } else {
+    newId = (await getElementCount()) + 1;
+
+    await database.collection('elements').insertOne({
+      id: newId,
+      name: winningSuggestion.childName,
+      color: winningSuggestion.childColor,
+      suggestedBy: winningSuggestion.suggestedBy,
+      pioneer,
+      pioneerNote: '',
+      createdOn: Date.now()
+    });
+  }
+
   await database.collection('recipes').insertOne({
     parent1: winningSuggestion.parent1,
     parent2: winningSuggestion.parent2,
-    child: id
+    child: newId
   });
   await database.collection('suggestions').deleteMany({ parent1, parent2 });
+
+  return 'PIONEER';
 }
 export async function submitVote(uuid: string, userToken: string, pioneer: string) {
   if (!(await suggestionExists(uuid))) {
@@ -123,8 +136,7 @@ export async function submitVote(uuid: string, userToken: string, pioneer: strin
   if ((await getUpvotes(uuid)) === Number(process.env.VOTE_THRESHOLD)) {
     const suggestion = await getSuggestion(uuid);
 
-    endVoting(uuid, suggestion.parent1, suggestion.parent2, pioneer);
-    return 'PIONEER';
+    return await endVoting(uuid, suggestion.parent1, suggestion.parent2, pioneer);
   }
   if (voted) {
     return 'VOTED';
@@ -137,8 +149,6 @@ async function ensureDefaultElement(id: number, name: string, color: ElementColo
       id,
       name,
       color,
-      parent1: null,
-      parent2: null,
       pioneer: 'Elemental Reborn',
       pioneerNote: 'A default element.',
       createdOn: Date.now()

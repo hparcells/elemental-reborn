@@ -50,10 +50,6 @@ export interface SimpleElement {
 }
 /** An element. */
 export interface Element extends SimpleElement {
-  /** Parent element that will make this element. */
-  parent1: number;
-  /** Parent element that will make this element. */
-  parent2: number;
   /** The person who suggested the element. */
   suggestedBy: string;
   /** The user who got the final vote. */
