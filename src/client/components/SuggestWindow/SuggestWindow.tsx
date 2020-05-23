@@ -100,12 +100,22 @@ function SuggestWindow({
     setCanSubmit(suggestingData.childName !== 'Your Element');
   }
   function handleEditTextChange(text: string) {
+    if (!text) {
+      handleSuggestingDataChange({
+        ...suggestingData,
+        childName: 'Your Element'
+      });
+      setCanSubmit(
+        text !== 'Your Element' && text !== '' && text.length !== 0 && text.length <= 50
+      );
+      return;
+    }
     handleSuggestingDataChange({
       ...suggestingData,
       childName: text
     });
 
-    setCanSubmit(text !== 'Your Element' && text !== '');
+    setCanSubmit(text !== 'Your Element' && text !== '' && text.length !== 0 && text.length <= 50);
   }
   async function handleSuggest() {
     setCanSubmit(false);

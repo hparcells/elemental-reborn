@@ -49,7 +49,7 @@ function Element({
         }}
       >
         {editable ? (
-          <EditableLabel text={element.name} onFocusOut={handleEditTextChange} />
+          <EditableLabel text={element.name || 'Your Element'} onFocusOut={handleEditTextChange} />
         ) : (
           element.name
         )}
