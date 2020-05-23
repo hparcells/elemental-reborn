@@ -39,7 +39,10 @@ async function suggestionExists(uuid: string) {
   return (await database.collection('suggestions').find({ uuid }).count()) === 1;
 }
 export async function addSuggestion(suggestion: Suggestion) {
-  if (!(await suggestionExists(suggestion.uuid))) {
+  if (
+    !(await suggestionExists(suggestion.uuid)) &&
+    !(await recipeExists(suggestion.parent1, suggestion.parent2))
+  ) {
     await database.collection('suggestions').insertOne(suggestion);
   }
 }
@@ -107,15 +110,26 @@ async function endVoting(uuid: string, parent1: number, parent2: number, pioneer
   await database.collection('suggestions').deleteMany({ parent1, parent2 });
 }
 export async function submitVote(uuid: string, userToken: string, pioneer: string) {
-  // if (!(await voteExists(uuid, userToken))) {
-  await database.collection('suggestions').updateOne({ uuid }, { $push: { upvotes: userToken } });
-  // }
+  if (!(await suggestionExists(uuid))) {
+    return 'NO-SUGGESTION';
+  }
+
+  let voted = false;
+  if (!(await voteExists(uuid, userToken))) {
+    await database.collection('suggestions').updateOne({ uuid }, { $push: { upvotes: userToken } });
+    voted = true;
+  }
 
   if ((await getUpvotes(uuid)) === Number(process.env.VOTE_THRESHOLD)) {
     const suggestion = await getSuggestion(uuid);
 
     endVoting(uuid, suggestion.parent1, suggestion.parent2, pioneer);
+    return 'PIONEER';
   }
+  if (voted) {
+    return 'VOTED';
+  }
+  return 'ALREADY-VOTED';
 }
 async function ensureDefaultElement(id: number, name: string, color: ElementColor) {
   if (!(await elementExists(id))) {

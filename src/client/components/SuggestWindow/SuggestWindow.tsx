@@ -40,8 +40,8 @@ function VotingElement({
 }: {
   suggestion: { uuid: string; childName: string; childColor: ElementColor };
 }) {
-  function handleClick() {
-    submitVote(suggestion.uuid, userToken);
+  async function handleClick() {
+    const repoonse = await submitVote(suggestion.uuid, userToken);
   }
 
   return (
@@ -83,7 +83,7 @@ function SuggestWindow({
         // Do nothing.
       }
     })();
-  }, [suggestingData]);
+  }, [suggestingData?.parent1, suggestingData?.parent2]);
 
   function handleColorClick(color: ElementColor) {
     handleSuggestingDataChange({
