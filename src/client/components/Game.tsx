@@ -97,7 +97,11 @@ function Game() {
         {elements.length > 0 && obtainedColors.length > 0
           ? obtainedColors.map((color) => {
               return (
-                <div key={color} id={color} style={{ display: 'flex', margin: '1em 0px' }}>
+                <div
+                  key={color}
+                  id={color}
+                  style={{ display: 'flex', margin: '1em 0px', flexWrap: 'wrap' }}
+                >
                   {elements
                     .filter((element: SimpleElement) => {
                       return element.color === color;

@@ -97,7 +97,7 @@ async function endVoting(uuid: string, parent1: number, parent2: number, pioneer
   const winningSuggestion = await getSuggestion(uuid);
 
   let newId;
-  if (elementExistsName(winningSuggestion.childName)) {
+  if (await elementExistsName(winningSuggestion.childName)) {
     newId = (await getElementName(winningSuggestion.childName)).id;
   } else {
     newId = (await getElementCount()) + 1;
@@ -133,7 +133,7 @@ export async function submitVote(uuid: string, userToken: string, pioneer: strin
     voted = true;
   }
 
-  if ((await getUpvotes(uuid)) === Number(process.env.VOTE_THRESHOLD)) {
+  if ((await getUpvotes(uuid)) >= Number(process.env.VOTE_THRESHOLD)) {
     const suggestion = await getSuggestion(uuid);
 
     return await endVoting(uuid, suggestion.parent1, suggestion.parent2, pioneer);

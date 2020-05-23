@@ -1,6 +1,7 @@
 {
     "version": "0.1",
     "ignoreWords": [
+        "browserconfig",
         "carykh's",
         "downvoted",
         "downvotes",
@@ -9,6 +10,7 @@
         "hparcells",
         "iqacd",
         "lyjw",
+        "msapplication",
         "otormactiabvs",
         "signin",
         "upvotes",

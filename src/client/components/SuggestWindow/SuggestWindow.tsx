@@ -41,7 +41,7 @@ function VotingElement({
   suggestion: { uuid: string; childName: string; childColor: ElementColor };
 }) {
   async function handleClick() {
-    const repoonse = await submitVote(suggestion.uuid, userToken);
+    const response = await submitVote(suggestion.uuid, userToken);
   }
 
   return (
