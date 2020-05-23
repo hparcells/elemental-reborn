@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import useMousePosition from '@react-hook/mouse-position';
 
 import Element from './Element';
-import SuggestWindow from './SuggestWindow';
+import SuggestWindow from './SuggestWindow/SuggestWindow';
 
 import { ElementColor, SimpleElement } from '../../shared/types';
 import { SuggestingData } from '../logic/types';
@@ -72,7 +72,6 @@ function Game({ userToken }: { userToken: string }) {
 
   return (
     <div ref={ref} style={{ width: '100vw', height: '100vh' }}>
-      <p>{userToken}</p>
       <div style={{ padding: '0.5em' }}>
         <p>
           {elements.length}/{elementCount} ({(elements.length / elementCount) * 100}%)
@@ -117,6 +116,7 @@ function Game({ userToken }: { userToken: string }) {
       {suggesting ? (
         <SuggestWindow
           suggestingData={suggestingData}
+          userToken={userToken}
           handleSuggestingDataChange={handleSuggestingDataChange}
           endSuggesting={endSuggesting}
         />

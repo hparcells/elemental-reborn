@@ -1,0 +1,22 @@
+.root {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.window {
+  background-color: #ffffff;
+  height: 320px;
+  width: 320px;
+}
+
+@media (min-width: 555px) {
+  .window {
+    transform: scale(1.5);
+  }
+}

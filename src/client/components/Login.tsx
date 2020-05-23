@@ -21,7 +21,7 @@ function Login({ handleLogin }: { handleLogin: (googleUser: any) => void }) {
 
   return (
     <div>
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'center', maxWidth: '900px', margin: 'auto' }}>
         <h1>Elemental Reborn</h1>
 
         <p>

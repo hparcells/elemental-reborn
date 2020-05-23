@@ -1,6 +1,7 @@
 {
     "version": "0.1",
     "ignoreWords": [
+        "carykh's",
         "downvoted",
         "downvotes",
         "elementalreborncluster",
@@ -11,6 +12,7 @@
         "otormactiabvs",
         "signin",
         "upvotes",
+        "uuidv",
         "wcag"
     ]
 }

@@ -8,8 +8,10 @@ import {
   getElementCount,
   recipeExists,
   getChildId,
-  addSuggestion
+  addSuggestion,
+  getSuggestions
 } from './database';
+import { verifyGoogleToken } from './google';
 
 setupDotEnv();
 
@@ -42,6 +44,11 @@ app.get('/api/get-recipe/:parent1/:parent2', async (req, res) => {
   res.send();
 });
 app.post('/api/suggest', async (req, res) => {
-  addSuggestion(req.body.suggestion);
+  if (await verifyGoogleToken(req.headers.token as string)) {
+    addSuggestion(req.body.suggestion);
+  }
   res.end();
+});
+app.get('/api/suggestions/:parent1/:parent2', async (req, res) => {
+  res.send(await getSuggestions(Number(req.params.parent1), Number(req.params.parent2)));
 });

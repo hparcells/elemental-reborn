@@ -36,6 +36,7 @@ function Element({
         userSelect: 'none',
         boxShadow: 'rgba(0, 0, 0, 0.75) 0px 2px 3px 0px',
         textAlign: 'center',
+        wordBreak: 'break-word',
         ...style
       }}
       onClick={handleClick}

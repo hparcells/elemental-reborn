@@ -43,6 +43,35 @@ export async function addSuggestion(suggestion: Suggestion) {
     await database.collection('suggestions').insertOne(suggestion);
   }
 }
+export async function getSuggestions(parent1: number, parent2: number) {
+  return await database
+    .collection('suggestions')
+    .aggregate([
+      {
+        $match: {
+          parent1,
+          parent2
+        }
+      },
+      {
+        $addFields: {
+          votesLength: {
+            $size: '$upvotes'
+          }
+        }
+      },
+      {
+        $sort: {
+          votesLength: -1
+        }
+      },
+      {
+        $limit: 3
+      }
+    ])
+    .project({ _id: false, childName: true, childColor: true })
+    .toArray();
+}
 async function ensureDefaultElement(id: number, name: string, color: ElementColor) {
   if (!(await elementExists(id))) {
     await database.collection('elements').insertOne({

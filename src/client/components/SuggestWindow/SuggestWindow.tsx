@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-import { SuggestingData } from '../logic/types';
-import Element from './Element';
+import { SuggestingData } from '../../logic/types';
+import Element from '../Element';
 
-import { ELEMENT_COLOR_MAP, ElementColor } from '../../shared/types';
+import { ELEMENT_COLOR_MAP, ElementColor } from '../../../shared/types';
 import { Button } from '@material-ui/core';
-import { suggestRecipe } from '../logic/elements';
+import { suggestRecipe, getSuggestions } from '../../logic/elements';
+
+import classes from './SuggestWindow.module.scss';
 
 function ColorSquare({
   color,
@@ -33,14 +36,31 @@ function ColorSquare({
 
 function SuggestWindow({
   suggestingData,
+  userToken,
   handleSuggestingDataChange,
   endSuggesting
 }: {
   suggestingData: SuggestingData;
+  userToken: string;
   handleSuggestingDataChange: (suggestingData: SuggestingData) => void;
   endSuggesting: () => void;
 }) {
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
+  const [othersSuggestions, setOthersSuggestions] = useState<
+    { childName: string; childColor: ElementColor }[]
+  >(null as any);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setOthersSuggestions(
+          (await getSuggestions(suggestingData.parent1.id, suggestingData.parent2.id)).data
+        );
+      } catch (error) {
+        // Do nothing.
+      }
+    })();
+  }, [suggestingData]);
 
   function handleColorClick(color: ElementColor) {
     handleSuggestingDataChange({
@@ -60,26 +80,15 @@ function SuggestWindow({
   }
   async function handleSuggest() {
     setCanSubmit(false);
-    await suggestRecipe(suggestingData);
+    await suggestRecipe(suggestingData, userToken);
     endSuggesting();
     setCanSubmit(true);
+    setOthersSuggestions(null as any);
   }
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        top: '0px',
-        left: '0px',
-        width: '100vw',
-        height: '100vh',
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}
-    >
-      <div style={{ backgroundColor: '#ffffff', height: '320px', width: '320px' }}>
+    <div className={classes.root}>
+      <div className={classes.window}>
         <span
           style={{
             fontSize: '32px',
@@ -116,7 +125,7 @@ function SuggestWindow({
           })}
         </div>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             {suggestingData && (
               <Element
                 element={{
@@ -143,35 +152,22 @@ function SuggestWindow({
             </Button>
           </div>
           <div>
-            <span style={{ marginLeft: '1em' }}>Others' Suggestions</span>
+            <span style={{ marginLeft: '1em' }}>
+              Others' Suggestions <span style={{ fontSize: '10px' }}>(Click to Vote)</span>
+            </span>
             <div style={{ display: 'flex', flexDirection: 'row', transform: 'scale(0.9)' }}>
-              {suggestingData && (
-                <Element
-                  element={{
-                    id: 0,
-                    name: suggestingData.childName,
-                    color: suggestingData.childColor
-                  }}
-                />
-              )}
-              {suggestingData && (
-                <Element
-                  element={{
-                    id: 0,
-                    name: suggestingData.childName,
-                    color: suggestingData.childColor
-                  }}
-                />
-              )}
-              {suggestingData && (
-                <Element
-                  element={{
-                    id: 0,
-                    name: suggestingData.childName,
-                    color: suggestingData.childColor
-                  }}
-                />
-              )}
+              {othersSuggestions &&
+                othersSuggestions.map((suggestion) => {
+                  return (
+                    <Element
+                      element={{
+                        id: 0,
+                        name: suggestion.childName,
+                        color: suggestion.childColor
+                      }}
+                    />
+                  );
+                })}
             </div>
           </div>
         </div>

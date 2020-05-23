@@ -50,17 +50,28 @@ export async function getRecipe(parent1: number, parent2: number) {
   }
   return 'suggest';
 }
-export async function suggestRecipe(suggestingData: SuggestingData) {
-  await axios.post('/api/suggest', {
-    suggestion: {
-      uuid: uuidv4(),
-      suggestedBy: username,
-      parent1: suggestingData.parent1.id,
-      parent2: suggestingData.parent2.id,
-      childName: suggestingData.childName,
-      childColor: suggestingData.childColor,
-      upvotes: [],
-      downvotes: []
+export async function suggestRecipe(suggestingData: SuggestingData, userToken: string) {
+  await axios.post(
+    '/api/suggest',
+    {
+      suggestion: {
+        uuid: uuidv4(),
+        suggestedBy: username,
+        parent1: suggestingData.parent1.id,
+        parent2: suggestingData.parent2.id,
+        childName: suggestingData.childName,
+        childColor: suggestingData.childColor,
+        upvotes: [],
+        downvotes: []
+      }
+    },
+    {
+      headers: {
+        Token: userToken
+      }
     }
-  });
+  );
+}
+export async function getSuggestions(parent1: number, parent2: number) {
+  return await axios.get(`/api/suggestions/${parent1}/${parent2}`);
 }
