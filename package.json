@@ -7,7 +7,7 @@
     "dev": "fullstack-system dev",
     "build": "fullstack-system build",
     "clean": "fullstack-system clean",
-    "production": "fullstack-system production"
+    "production": "fullstack-system production -p 15100"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.14",

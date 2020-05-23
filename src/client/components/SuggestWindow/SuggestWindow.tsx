@@ -36,12 +36,18 @@ function ColorSquare({
   );
 }
 function VotingElement({
-  suggestion
+  suggestion,
+  openSnackbar
 }: {
   suggestion: { uuid: string; childName: string; childColor: ElementColor };
+  openSnackbar: (message: string) => void;
 }) {
   async function handleClick() {
     const response = await submitVote(suggestion.uuid, userToken);
+
+    if (response === 'VOTED') {
+      openSnackbar('Voted!');
+    }
   }
 
   return (
@@ -99,7 +105,7 @@ function SuggestWindow({
       childName: text
     });
 
-    setCanSubmit(text !== 'Your Element');
+    setCanSubmit(text !== 'Your Element' && text !== '');
   }
   async function handleSuggest() {
     setCanSubmit(false);
@@ -182,7 +188,13 @@ function SuggestWindow({
             <div style={{ display: 'flex', flexDirection: 'row', transform: 'scale(0.9)' }}>
               {othersSuggestions &&
                 othersSuggestions.map((suggestion, index) => {
-                  return <VotingElement key={index} suggestion={suggestion} />;
+                  return (
+                    <VotingElement
+                      key={index}
+                      suggestion={suggestion}
+                      openSnackbar={openSnackbar}
+                    />
+                  );
                 })}
             </div>
           </div>

@@ -8,7 +8,7 @@ import './index.scss';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
-if(process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
   ReactGA.initialize('UA-134185568-10');
   ReactGA.pageview('/');
 }
