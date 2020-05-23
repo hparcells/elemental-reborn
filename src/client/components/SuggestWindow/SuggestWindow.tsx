@@ -6,9 +6,11 @@ import Element from '../Element';
 
 import { ELEMENT_COLOR_MAP, ElementColor } from '../../../shared/types';
 import { Button } from '@material-ui/core';
-import { suggestRecipe, getSuggestions } from '../../logic/elements';
+import { suggestRecipe, getSuggestions, submitVote } from '../../logic/elements';
 
 import classes from './SuggestWindow.module.scss';
+
+import { userToken } from '../App';
 
 function ColorSquare({
   color,
@@ -33,21 +35,42 @@ function ColorSquare({
     ></div>
   );
 }
+function VotingElement({
+  suggestion
+}: {
+  suggestion: { uuid: string; childName: string; childColor: ElementColor };
+}) {
+  function handleClick() {
+    submitVote(suggestion.uuid, userToken);
+  }
+
+  return (
+    <div onClick={handleClick}>
+      <Element
+        element={{
+          id: 0,
+          name: suggestion.childName,
+          color: suggestion.childColor
+        }}
+      />
+    </div>
+  );
+}
 
 function SuggestWindow({
   suggestingData,
-  userToken,
   handleSuggestingDataChange,
-  endSuggesting
+  endSuggesting,
+  openSnackbar
 }: {
   suggestingData: SuggestingData;
-  userToken: string;
   handleSuggestingDataChange: (suggestingData: SuggestingData) => void;
   endSuggesting: () => void;
+  openSnackbar: (message: string) => void;
 }) {
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
   const [othersSuggestions, setOthersSuggestions] = useState<
-    { childName: string; childColor: ElementColor }[]
+    { uuid: string; childName: string; childColor: ElementColor }[]
   >(null as any);
 
   useEffect(() => {
@@ -84,6 +107,7 @@ function SuggestWindow({
     endSuggesting();
     setCanSubmit(true);
     setOthersSuggestions(null as any);
+    openSnackbar('Suggestion sent!');
   }
 
   return (
@@ -157,16 +181,8 @@ function SuggestWindow({
             </span>
             <div style={{ display: 'flex', flexDirection: 'row', transform: 'scale(0.9)' }}>
               {othersSuggestions &&
-                othersSuggestions.map((suggestion) => {
-                  return (
-                    <Element
-                      element={{
-                        id: 0,
-                        name: suggestion.childName,
-                        color: suggestion.childColor
-                      }}
-                    />
-                  );
+                othersSuggestions.map((suggestion, index) => {
+                  return <VotingElement key={index} suggestion={suggestion} />;
                 })}
             </div>
           </div>

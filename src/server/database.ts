@@ -43,7 +43,7 @@ export async function addSuggestion(suggestion: Suggestion) {
     await database.collection('suggestions').insertOne(suggestion);
   }
 }
-export async function getSuggestions(parent1: number, parent2: number) {
+export async function getTopSuggestions(parent1: number, parent2: number) {
   return await database
     .collection('suggestions')
     .aggregate([
@@ -69,8 +69,53 @@ export async function getSuggestions(parent1: number, parent2: number) {
         $limit: 3
       }
     ])
-    .project({ _id: false, childName: true, childColor: true })
+    .project({ _id: false, uuid: true, childName: true, childColor: true })
     .toArray();
+}
+async function voteExists(uuid: string, userToken: string) {
+  return ((
+    await database.collection('suggestions').find({ uuid }).toArray()
+  )[0] as Suggestion).upvotes.includes(userToken);
+}
+async function getUpvotes(uuid: string) {
+  return ((await database.collection('suggestions').find({ uuid }).toArray())[0] as Suggestion)
+    .upvotes.length;
+}
+async function getSuggestion(uuid: string): Promise<Suggestion> {
+  return (await database.collection('suggestions').find({ uuid }).toArray())[0];
+}
+async function endVoting(uuid: string, parent1: number, parent2: number, pioneer: string) {
+  const winningSuggestion = await getSuggestion(uuid);
+  const id = (await getElementCount()) + 1;
+
+  await database.collection('elements').insertOne({
+    id,
+    name: winningSuggestion.childName,
+    color: winningSuggestion.childColor,
+    parent1: winningSuggestion.parent1,
+    parent2: winningSuggestion.parent2,
+    suggestedBy: winningSuggestion.suggestedBy,
+    pioneer,
+    pioneerNote: '',
+    createdOn: Date.now()
+  });
+  await database.collection('recipes').insertOne({
+    parent1: winningSuggestion.parent1,
+    parent2: winningSuggestion.parent2,
+    child: id
+  });
+  await database.collection('suggestions').deleteMany({ parent1, parent2 });
+}
+export async function submitVote(uuid: string, userToken: string, pioneer: string) {
+  // if (!(await voteExists(uuid, userToken))) {
+  await database.collection('suggestions').updateOne({ uuid }, { $push: { upvotes: userToken } });
+  // }
+
+  if ((await getUpvotes(uuid)) === Number(process.env.VOTE_THRESHOLD)) {
+    const suggestion = await getSuggestion(uuid);
+
+    endVoting(uuid, suggestion.parent1, suggestion.parent2, pioneer);
+  }
 }
 async function ensureDefaultElement(id: number, name: string, color: ElementColor) {
   if (!(await elementExists(id))) {

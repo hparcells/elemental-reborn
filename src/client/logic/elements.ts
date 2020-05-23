@@ -75,3 +75,6 @@ export async function suggestRecipe(suggestingData: SuggestingData, userToken: s
 export async function getSuggestions(parent1: number, parent2: number) {
   return await axios.get(`/api/suggestions/${parent1}/${parent2}`);
 }
+export async function submitVote(uuid: string, userToken: string) {
+  await axios.get(`/api/vote/${uuid}`, { headers: { Token: userToken, Pioneer: username } });
+}

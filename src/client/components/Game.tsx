@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useMousePosition from '@react-hook/mouse-position';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
 import Element from './Element';
 import SuggestWindow from './SuggestWindow/SuggestWindow';
@@ -10,7 +12,11 @@ import { SuggestingData } from '../logic/types';
 import { getElementCount, getObtainedColors, getRecipe } from '../logic/elements';
 import { getGameData } from '../logic/save';
 
-function Game({ userToken }: { userToken: string }) {
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant='filled' {...props} />;
+}
+
+function Game() {
   const [elements, setElements] = useState<SimpleElement[]>([]);
   const [elementCount, setElementCount] = useState<number>('Fetching...' as any);
   const [obtainedColors, setObtainedColors] = useState<ElementColor[]>([]);
@@ -18,6 +24,9 @@ function Game({ userToken }: { userToken: string }) {
   const [suggestingData, setSuggestingData] = useState<SuggestingData>(null as any);
 
   const [heldElement, setHeldElement] = useState<number | null>(null);
+
+  const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
 
   const [mousePosition, ref] = useMousePosition(0, 0, 30);
 
@@ -70,6 +79,14 @@ function Game({ userToken }: { userToken: string }) {
     setSuggestingData(null as any);
   }
 
+  function openSnackbar(message: string) {
+    setSnackbarMessage(message);
+    setShowSnackbar(true);
+  }
+  function closeSnackbar() {
+    setShowSnackbar(false);
+  }
+
   return (
     <div ref={ref} style={{ width: '100vw', height: '100vh' }}>
       <div style={{ padding: '0.5em' }}>
@@ -116,11 +133,17 @@ function Game({ userToken }: { userToken: string }) {
       {suggesting ? (
         <SuggestWindow
           suggestingData={suggestingData}
-          userToken={userToken}
           handleSuggestingDataChange={handleSuggestingDataChange}
           endSuggesting={endSuggesting}
+          openSnackbar={openSnackbar}
         />
       ) : null}
+
+      <Snackbar open={showSnackbar} autoHideDuration={5000} onClose={closeSnackbar}>
+        <Alert onClose={closeSnackbar} severity='success'>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

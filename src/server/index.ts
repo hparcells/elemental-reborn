@@ -9,7 +9,8 @@ import {
   recipeExists,
   getChildId,
   addSuggestion,
-  getSuggestions
+  getTopSuggestions,
+  submitVote
 } from './database';
 import { verifyGoogleToken } from './google';
 
@@ -50,5 +51,12 @@ app.post('/api/suggest', async (req, res) => {
   res.end();
 });
 app.get('/api/suggestions/:parent1/:parent2', async (req, res) => {
-  res.send(await getSuggestions(Number(req.params.parent1), Number(req.params.parent2)));
+  res.send(await getTopSuggestions(Number(req.params.parent1), Number(req.params.parent2)));
+});
+app.get('/api/vote/:uuid', async (req, res) => {
+  const userId = await verifyGoogleToken(req.headers.token as string);
+  if (userId) {
+    submitVote(req.params.uuid, userId, req.headers.pioneer as string);
+  }
+  res.end();
 });
