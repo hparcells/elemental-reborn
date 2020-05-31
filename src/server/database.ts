@@ -64,14 +64,24 @@ export async function getTopSuggestions(parent1: number, parent2: number) {
       },
       {
         $addFields: {
-          votesLength: {
+          upvoteCount: {
             $size: '$upvotes'
+          },
+          downvoteCount: {
+            $size: '$downvotes'
+          }
+        }
+      },
+      {
+        $addFields: {
+          totalVotes: {
+            $subtract: ['$upvoteCount', '$downvoteCount']
           }
         }
       },
       {
         $sort: {
-          votesLength: -1
+          totalVotes: -1
         }
       },
       {
@@ -85,6 +95,11 @@ async function voteExists(uuid: string, userToken: string) {
   return ((
     await database.collection('suggestions').find({ uuid }).toArray()
   )[0] as Suggestion).upvotes.includes(userToken);
+}
+async function downvoteExists(uuid: string, userToken: string) {
+  return ((
+    await database.collection('suggestions').find({ uuid }).toArray()
+  )[0] as Suggestion).downvotes.includes(userToken);
 }
 async function getUpvotes(uuid: string) {
   return ((await database.collection('suggestions').find({ uuid }).toArray())[0] as Suggestion)
@@ -138,6 +153,24 @@ export async function submitVote(uuid: string, userToken: string, pioneer: strin
 
     return await endVoting(uuid, suggestion.parent1, suggestion.parent2, pioneer);
   }
+  if (voted) {
+    return 'VOTED';
+  }
+  return 'ALREADY-VOTED';
+}
+export async function submitDownvote(uuid: string, userToken: string) {
+  if (!(await suggestionExists(uuid))) {
+    return 'NO-SUGGESTION';
+  }
+
+  let voted = false;
+  if (!(await downvoteExists(uuid, userToken))) {
+    await database
+      .collection('suggestions')
+      .updateOne({ uuid }, { $push: { downvotes: userToken } });
+    voted = true;
+  }
+
   if (voted) {
     return 'VOTED';
   }

@@ -10,7 +10,8 @@ import {
   getChildId,
   addSuggestion,
   getTopSuggestions,
-  submitVote
+  submitVote,
+  submitDownvote
 } from './database';
 import { verifyGoogleToken } from './google';
 
@@ -58,6 +59,15 @@ app.get('/api/vote/:uuid', async (req, res) => {
     const userId = await verifyGoogleToken(req.headers.token as string);
     if (userId && req.headers.pioneer) {
       res.send(await submitVote(req.params.uuid, userId, req.headers.pioneer as string));
+    }
+  }
+  res.end();
+});
+app.get('/api/downvote/:uuid', async (req, res) => {
+  if (req.headers.token) {
+    const userId = await verifyGoogleToken(req.headers.token as string);
+    if (userId) {
+      res.send(await submitDownvote(req.params.uuid, userId));
     }
   }
   res.end();

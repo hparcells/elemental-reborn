@@ -6,7 +6,7 @@ import Element from '../Element';
 
 import { ELEMENT_COLOR_MAP, ElementColor } from '../../../shared/types';
 import { Button } from '@material-ui/core';
-import { suggestRecipe, getSuggestions, submitVote } from '../../logic/elements';
+import { suggestRecipe, getSuggestions, submitVote, submitDownvote } from '../../logic/elements';
 
 import classes from './SuggestWindow.module.scss';
 
@@ -42,23 +42,38 @@ function VotingElement({
   suggestion: { uuid: string; childName: string; childColor: ElementColor };
   openSnackbar: (message: string) => void;
 }) {
-  async function handleClick() {
+  async function handleUpvote() {
     const response = await submitVote(suggestion.uuid, userToken);
 
     if (response === 'VOTED') {
       openSnackbar('Voted!');
     }
   }
+  async function handleDownvote() {
+    const response = await submitDownvote(suggestion.uuid, userToken);
+
+    if (response === 'VOTED') {
+      openSnackbar('Downvoted!');
+    }
+  }
 
   return (
-    <div onClick={handleClick}>
-      <Element
-        element={{
-          id: 0,
-          name: suggestion.childName,
-          color: suggestion.childColor
-        }}
-      />
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div onClick={handleUpvote}>
+        <Element
+          element={{
+            id: 0,
+            name: suggestion.childName,
+            color: suggestion.childColor
+          }}
+        />
+      </div>
+      <span
+        style={{ fontSize: '12px', textAlign: 'center', cursor: 'default' }}
+        onClick={handleDownvote}
+      >
+        Downvote
+      </span>
     </div>
   );
 }

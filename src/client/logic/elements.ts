@@ -82,3 +82,10 @@ export async function submitVote(uuid: string, userToken: string) {
     })
   ).data;
 }
+export async function submitDownvote(uuid: string, userToken: string) {
+  return (
+    await axios.get(`/api/downvote/${uuid}`, {
+      headers: { Token: userToken }
+    })
+  ).data;
+}
