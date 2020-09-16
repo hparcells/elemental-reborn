@@ -1,3 +1,3 @@
 declare module 'react-cursor-position';
 declare module 'color-sort';
-declare module 'react-inline-editing';
+declare module 'react-easy-edit';

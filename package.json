@@ -1,7 +1,7 @@
 {
   "name": "elemental-reborn",
   "description": "Yet another Elemental 3 clone. Combine elements to make more elements.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "scripts": {
     "start": "fullstack-system dev",
     "dev": "fullstack-system dev",
@@ -25,9 +25,9 @@
     "mongodb": "^3.5.7",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-easy-edit": "^1.11.0",
     "react-ga": "^2.7.0",
     "react-google-login": "^5.1.20",
-    "react-inline-editing": "^1.0.10",
     "uuid": "^8.1.0",
     "wcag-color": "^1.1.1"
   },

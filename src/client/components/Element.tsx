@@ -1,6 +1,7 @@
 import React from 'react';
 import { best } from 'wcag-color';
-import EditableLabel from 'react-inline-editing';
+// import EditableLabel from 'react-inline-editing';
+import EasyEdit from 'react-easy-edit';
 
 import { SimpleElement, ELEMENT_COLOR_MAP } from '../../shared/types';
 
@@ -49,7 +50,8 @@ function Element({
         }}
       >
         {editable ? (
-          <EditableLabel text={element.name || 'Your Element'} onFocusOut={handleEditTextChange} />
+          // <EditableLabel text={element.name || 'Your Element'} onFocusOut={handleEditTextChange} />
+          <EasyEdit type='text' onSave={handleEditTextChange} value={element.name} />
         ) : (
           element.name
         )}
