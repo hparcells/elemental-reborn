@@ -37,14 +37,22 @@ function ColorSquare({
 }
 function VotingElement({
   suggestion,
-  openSnackbar
+  openSnackbar,
+  handlePioneer
 }: {
   suggestion: { uuid: string; childName: string; childColor: ElementColor };
   openSnackbar: (message: string) => void;
+  handlePioneer: (id: number) => void;
 }) {
   async function handleUpvote() {
-    const response = await submitVote(suggestion.uuid, userToken);
+    const response = String(await submitVote(suggestion.uuid, userToken));
 
+    if (response.startsWith('PIONEER')) {
+      const id = response.substring(8);
+
+      openSnackbar(`Created: ${suggestion.childName}`);
+      handlePioneer(Number(id));
+    }
     if (response === 'VOTED') {
       openSnackbar('Voted!');
     }
@@ -86,7 +94,7 @@ function SuggestWindow({
 }: {
   suggestingData: SuggestingData;
   handleSuggestingDataChange: (suggestingData: SuggestingData) => void;
-  endSuggesting: () => void;
+  endSuggesting: (id?: number) => void;
   openSnackbar: (message: string) => void;
 }) {
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
@@ -140,6 +148,13 @@ function SuggestWindow({
     setOthersSuggestions(null as any);
     openSnackbar('Suggestion sent!');
   }
+  function handlePioneer(id: number) {
+    endSuggesting(id);
+    setOthersSuggestions(null as any);
+  }
+  function handleCloseSuggestWindow() {
+    endSuggesting();
+  }
 
   return (
     <div className={classes.root}>
@@ -153,7 +168,7 @@ function SuggestWindow({
             color: '#333333',
             cursor: 'default'
           }}
-          onClick={endSuggesting}
+          onClick={handleCloseSuggestWindow}
         >
           🠈
         </span>
@@ -218,6 +233,7 @@ function SuggestWindow({
                       key={index}
                       suggestion={suggestion}
                       openSnackbar={openSnackbar}
+                      handlePioneer={handlePioneer}
                     />
                   );
                 })}

@@ -45,6 +45,10 @@ app.get('/api/get-recipe/:parent1/:parent2', async (req, res) => {
   res.set({ Type: 'Suggest' });
   res.send();
 });
+app.get('/api/get-element/:elementId', async (req, res) => {
+  res.set({ Type: 'Element' });
+  res.send(await getSimpleElement(Number(req.params.elementId)));
+});
 app.post('/api/suggest', async (req, res) => {
   if (req.headers.token && (await verifyGoogleToken(req.headers.token as string))) {
     addSuggestion(req.body.suggestion);

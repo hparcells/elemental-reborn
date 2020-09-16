@@ -199,7 +199,7 @@ async function endVoting(uuid: string, parent1: number, parent2: number, pioneer
   });
   await database.collection('suggestions').deleteMany({ parent1, parent2 });
 
-  return 'PIONEER';
+  return `PIONEER-${newId}`;
 }
 export async function submitVote(uuid: string, userToken: string, pioneer: string) {
   if (!(await suggestionExists(uuid))) {

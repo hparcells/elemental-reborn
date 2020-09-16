@@ -10,7 +10,12 @@ import SuggestWindow from './SuggestWindow/SuggestWindow';
 import { ElementColor, ElementCount, SimpleElement } from '../../shared/types';
 import { SuggestingData } from '../logic/types';
 
-import { getElementCount, getObtainedColors, getRecipe } from '../logic/elements';
+import {
+  getElementCount,
+  getObtainedColors,
+  getRecipe,
+  manualEarnElement
+} from '../logic/elements';
 import { getGameData } from '../logic/save';
 
 function Alert(props: AlertProps) {
@@ -43,15 +48,9 @@ function Game() {
     })();
   }, []);
 
-  async function handleElementClick(id: number) {
-    if (!heldElement) {
-      setHeldElement(id);
-      return;
-    }
-    setHeldElement(null);
-
-    const parent1 = Math.min(id, heldElement);
-    const parent2 = Math.max(id, heldElement);
+  async function tryElement(beforeParent1: number, beforeParent2: number) {
+    const parent1 = Math.min(beforeParent1, beforeParent2);
+    const parent2 = Math.max(beforeParent1, beforeParent2);
 
     const recipeResult = await getRecipe(parent1, parent2);
     if (recipeResult === 'element' || recipeResult === 'suggest') {
@@ -72,12 +71,26 @@ function Game() {
       }
     }
   }
+  async function handleElementClick(id: number) {
+    if (!heldElement) {
+      setHeldElement(id);
+      return;
+    }
+    setHeldElement(null);
+
+    tryElement(id, heldElement);
+  }
   function handleSuggestingDataChange(suggestingData: SuggestingData) {
     setSuggestingData(suggestingData);
   }
-  function endSuggesting() {
+  async function endSuggesting(id?: number) {
     setSuggesting(false);
     setSuggestingData(null as any);
+
+    if (id) {
+      manualEarnElement(id);
+      refreshData();
+    }
   }
 
   function openSnackbar(message: string) {

@@ -20,35 +20,43 @@ export async function getObtainedColors(): Promise<ElementColor[]> {
     })
   );
 }
+function earnElement(response: any) {
+  const existingData = localStorage.getItem('elementalRebornData');
+
+  if (!existingData) {
+    throw new Error('No data exists. Try reloading the page.');
+  }
+
+  const data: SimpleElement[] = JSON.parse(existingData);
+  if (
+    !data
+      .map((element: SimpleElement) => {
+        return element.id;
+      })
+      .includes(response.data.id)
+  ) {
+    data.push(response.data);
+    localStorage.setItem('elementalRebornData', JSON.stringify(data));
+
+    // TODO: Test this.
+    document.getElementById(response.data.color)?.scrollIntoView();
+
+    return 'element';
+  }
+  return 'element-no-refresh';
+}
 export async function getRecipe(parent1: number, parent2: number) {
   const response = await axios.get(`/api/get-recipe/${parent1}/${parent2}`);
 
   if (response.headers.type === 'Element') {
-    const existingData = localStorage.getItem('elementalRebornData');
-
-    if (!existingData) {
-      throw new Error('No data exists. Try reloading the page.');
-    }
-
-    const data: SimpleElement[] = JSON.parse(existingData);
-    if (
-      !data
-        .map((element: SimpleElement) => {
-          return element.id;
-        })
-        .includes(response.data.id)
-    ) {
-      data.push(response.data);
-      localStorage.setItem('elementalRebornData', JSON.stringify(data));
-
-      // TODO: Test this.
-      document.getElementById(response.data.color)?.scrollIntoView();
-
-      return 'element';
-    }
-    return 'element-no-refresh';
+    return earnElement(response);
   }
   return 'suggest';
+}
+export async function manualEarnElement(elementId: number) {
+  const response = await axios.get(`/api/get-element/${elementId}`);
+
+  earnElement(response);
 }
 export async function suggestRecipe(suggestingData: SuggestingData, userToken: string) {
   await axios.post(
