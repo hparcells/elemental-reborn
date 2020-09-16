@@ -75,14 +75,43 @@ export async function getElementCount(): Promise<ElementCount> {
 async function elementExists(id: number) {
   return (await database.collection('elements').find({ id }).count()) === 1;
 }
-async function elementExistsName(name: string) {
-  return (await database.collection('elements').find({ name }).count()) === 1;
+async function elementExistsName(elementName: string) {
+  return (
+    (
+      await database
+        .collection('elements')
+        .aggregate([
+          {
+            $project: {
+              name: { $toLower: '$name' }
+            }
+          },
+          {
+            $match: {
+              name: elementName.toLowerCase()
+            }
+          }
+        ])
+        .toArray()
+    ).length === 1
+  );
+}
+export async function getElementName(elementName: string) {
+  return (
+    await database
+      .collection('elements')
+      .aggregate([
+        {
+          $match: {
+            name: elementName.toLowerCase()
+          }
+        }
+      ])
+      .toArray()
+  )[0];
 }
 export async function getElement(id: number) {
   return (await database.collection('elements').find({ id }).toArray())[0];
-}
-export async function getElementName(name: string) {
-  return (await database.collection('elements').find({ name }).toArray())[0];
 }
 export async function getSimpleElement(id: number) {
   return (
