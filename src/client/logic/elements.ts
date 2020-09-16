@@ -2,16 +2,16 @@ import axios from 'axios';
 import { unique } from '@reverse/array';
 import { v4 as uuidv4 } from 'uuid';
 
-import { SimpleElement, ElementColor } from '../../shared/types';
+import { SimpleElement, ElementColor, ElementCount } from '../../shared/types';
 import { SuggestingData } from './types';
 
 import { getGameData } from './save';
 
 import { username } from '../components/App';
 
-export async function getElementCount(): Promise<number> {
+export async function getElementCount(): Promise<ElementCount> {
   const elementCountResponse = await axios.get('/api/element-count');
-  return Number(elementCountResponse.data);
+  return elementCountResponse.data;
 }
 export async function getObtainedColors(): Promise<ElementColor[]> {
   return unique(

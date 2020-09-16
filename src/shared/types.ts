@@ -91,3 +91,26 @@ export const ELEMENT_COLOR_MAP: { [K in ElementColor]: string } = {
   pink: '#ff80ab',
   magenta: '#e040fb'
 };
+export interface ElementCount {
+  total: number;
+  sky: number;
+  brown: number;
+  orange: number;
+  blue: number;
+  navy: number;
+  silver: number;
+  purple: number;
+  maroon: number;
+  gray: number;
+  green: number;
+  lime: number;
+  yellow: number;
+  olive: number;
+  white: number;
+  tan: number;
+  black: number;
+  red: number;
+  lavender: number;
+  pink: number;
+  magenta: number;
+}

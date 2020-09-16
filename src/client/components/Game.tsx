@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import useMousePosition from '@react-hook/mouse-position';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import { capitalize } from '@reverse/string';
 
 import Element from './Element';
 import SuggestWindow from './SuggestWindow/SuggestWindow';
 
-import { ElementColor, SimpleElement } from '../../shared/types';
+import { ElementColor, ElementCount, SimpleElement } from '../../shared/types';
 import { SuggestingData } from '../logic/types';
 
 import { getElementCount, getObtainedColors, getRecipe } from '../logic/elements';
@@ -18,7 +19,7 @@ function Alert(props: AlertProps) {
 
 function Game() {
   const [elements, setElements] = useState<SimpleElement[]>([]);
-  const [elementCount, setElementCount] = useState<number>('Fetching...' as any);
+  const [elementCount, setElementCount] = useState<ElementCount>('Fetching...' as any);
   const [obtainedColors, setObtainedColors] = useState<ElementColor[]>([]);
   const [suggesting, setSuggesting] = useState<boolean>(false);
   const [suggestingData, setSuggestingData] = useState<SuggestingData>(null as any);
@@ -91,30 +92,69 @@ function Game() {
     <div ref={ref} style={{ width: '100vw', height: '100vh' }}>
       <div style={{ padding: '0.5em' }}>
         <p>
-          {elements.length}/{elementCount} (
-          {Number(((elements.length / elementCount) * 100).toFixed(2))}%)
+          {elements.length}/{elementCount.total} (
+          {Number(((elements.length / elementCount.total) * 100).toFixed(2))}%)
         </p>
         {elements.length > 0 && obtainedColors.length > 0
           ? obtainedColors.map((color) => {
               return (
-                <div
-                  key={color}
-                  id={color}
-                  style={{ display: 'flex', margin: '1em 0px', flexWrap: 'wrap' }}
-                >
-                  {elements
-                    .filter((element: SimpleElement) => {
-                      return element.color === color;
-                    })
-                    .map((element: SimpleElement) => {
-                      return (
-                        <Element
-                          key={element.id}
-                          element={element}
-                          handleElementClick={handleElementClick}
-                        />
-                      );
-                    })}
+                <div key={color}>
+                  <div
+                    style={{
+                      display: 'flex'
+                    }}
+                  >
+                    <p
+                      style={{
+                        flexGrow: 1
+                      }}
+                    >
+                      {capitalize(color)} (
+                      {
+                        elements.filter((element: SimpleElement) => {
+                          return element.color === color;
+                        }).length
+                      }
+                      /{elementCount[color]})
+                    </p>
+                    <p
+                      style={{
+                        marginRight: '1em'
+                      }}
+                    >
+                      {(
+                        (elements.filter((element: SimpleElement) => {
+                          return element.color === color;
+                        }).length /
+                          elementCount[color]) *
+                        100
+                      ).toFixed(2)}
+                      %
+                    </p>
+                  </div>
+                  <div
+                    id={color}
+                    style={{
+                      display: 'flex',
+                      margin: '1em 0px',
+                      flexWrap: 'wrap',
+                      marginTop: '0px'
+                    }}
+                  >
+                    {elements
+                      .filter((element: SimpleElement) => {
+                        return element.color === color;
+                      })
+                      .map((element: SimpleElement) => {
+                        return (
+                          <Element
+                            key={element.id}
+                            element={element}
+                            handleElementClick={handleElementClick}
+                          />
+                        );
+                      })}
+                  </div>
                 </div>
               );
             })
@@ -130,8 +170,8 @@ function Game() {
           handleElementClick={handleElementClick}
           style={{
             position: 'absolute',
-            top: `${mousePosition.y && mousePosition.y + 20}px`,
-            left: `${mousePosition.x && mousePosition.x + 20}px`
+            top: `${mousePosition.y && mousePosition.y}px`,
+            left: `${mousePosition.x && mousePosition.x}px`
           }}
         />
       ) : null}

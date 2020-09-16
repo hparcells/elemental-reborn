@@ -22,7 +22,7 @@ setupDatabase();
 app.use(bodyParser());
 
 app.get('/api/element-count', async (req, res) => {
-  res.send(`${await getElementCount()}`);
+  res.send(await getElementCount());
 });
 app.get('/api/default-elements', async (req, res) => {
   res.send([

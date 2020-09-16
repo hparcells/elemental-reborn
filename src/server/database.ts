@@ -1,12 +1,76 @@
 import { MongoClient, Db } from 'mongodb';
 import assert from 'assert';
 
-import { ElementColor, Suggestion } from '../shared/types';
+import { ElementColor, ElementCount, Suggestion } from '../shared/types';
 
 export let database: Db;
 
-export async function getElementCount() {
-  return await database.collection('elements').countDocuments();
+export async function getElementCount(): Promise<ElementCount> {
+  const allElements = await database.collection('elements').find().toArray();
+
+  return {
+    total: allElements.length,
+    sky: allElements.filter((element) => {
+      return element.color === 'sky';
+    }).length,
+    brown: allElements.filter((element) => {
+      return element.color === 'brown';
+    }).length,
+    orange: allElements.filter((element) => {
+      return element.color === 'orange';
+    }).length,
+    blue: allElements.filter((element) => {
+      return element.color === 'blue';
+    }).length,
+    navy: allElements.filter((element) => {
+      return element.color === 'navy';
+    }).length,
+    silver: allElements.filter((element) => {
+      return element.color === 'silver';
+    }).length,
+    purple: allElements.filter((element) => {
+      return element.color === 'purple';
+    }).length,
+    maroon: allElements.filter((element) => {
+      return element.color === 'maroon';
+    }).length,
+    gray: allElements.filter((element) => {
+      return element.color === 'gray';
+    }).length,
+    green: allElements.filter((element) => {
+      return element.color === 'green';
+    }).length,
+    lime: allElements.filter((element) => {
+      return element.color === 'lime';
+    }).length,
+    yellow: allElements.filter((element) => {
+      return element.color === 'yellow';
+    }).length,
+    olive: allElements.filter((element) => {
+      return element.color === 'olive';
+    }).length,
+    white: allElements.filter((element) => {
+      return element.color === 'white';
+    }).length,
+    tan: allElements.filter((element) => {
+      return element.color === 'tan';
+    }).length,
+    black: allElements.filter((element) => {
+      return element.color === 'black';
+    }).length,
+    red: allElements.filter((element) => {
+      return element.color === 'red';
+    }).length,
+    lavender: allElements.filter((element) => {
+      return element.color === 'lavender';
+    }).length,
+    pink: allElements.filter((element) => {
+      return element.color === 'pink';
+    }).length,
+    magenta: allElements.filter((element) => {
+      return element.color === 'magenta';
+    }).length
+  };
 }
 async function elementExists(id: number) {
   return (await database.collection('elements').find({ id }).count()) === 1;
@@ -115,7 +179,7 @@ async function endVoting(uuid: string, parent1: number, parent2: number, pioneer
   if (await elementExistsName(winningSuggestion.childName)) {
     newId = (await getElementName(winningSuggestion.childName)).id;
   } else {
-    newId = (await getElementCount()) + 1;
+    newId = (await getElementCount()).total + 1;
 
     await database.collection('elements').insertOne({
       id: newId,
