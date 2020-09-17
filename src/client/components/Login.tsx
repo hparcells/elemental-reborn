@@ -3,6 +3,8 @@ import GoogleLogin from 'react-google-login';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
+import { usePlayerCount } from '../logic/stats';
+
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
 }
@@ -10,6 +12,8 @@ function Alert(props: AlertProps) {
 function Login({ handleLogin }: { handleLogin: (googleUser: any) => void }) {
   const [hasError, setHasError] = useState<boolean>(false);
   const [error, setError] = useState<string>();
+
+  const playerCount = usePlayerCount();
 
   function onLoginError(error: any) {
     setError(error.error);
@@ -22,7 +26,14 @@ function Login({ handleLogin }: { handleLogin: (googleUser: any) => void }) {
   return (
     <div>
       <div style={{ textAlign: 'center', maxWidth: '900px', margin: 'auto' }}>
-        <h1>Elemental Reborn</h1>
+        <div
+          style={{
+            textAlign: 'center'
+          }}
+        >
+          <h1 style={{ marginBottom: '0px' }}>Elemental Reborn</h1>
+          <p style={{ marginTop: '0px' }}>{playerCount} Online</p>
+        </div>
 
         <p>
           Yet another Elemental 3 clone. Combine elements together to form new elements. Login with

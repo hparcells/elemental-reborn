@@ -1,7 +1,7 @@
 import { MongoClient, Db } from 'mongodb';
 import assert from 'assert';
 
-import { ElementColor, ElementCount, Suggestion } from '../shared/types';
+import { Element, ElementColor, ElementCount, Recipe, Suggestion } from '../shared/types';
 
 export let database: Db;
 
@@ -72,7 +72,7 @@ export async function getElementCount(): Promise<ElementCount> {
     }).length
   };
 }
-async function elementExists(id: number) {
+export async function elementExists(id: number) {
   return (await database.collection('elements').find({ id }).count()) === 1;
 }
 async function elementExistsName(elementName: string) {
@@ -110,7 +110,7 @@ export async function getElementName(elementName: string) {
       .toArray()
   )[0];
 }
-export async function getElement(id: number) {
+export async function getElement(id: number): Promise<Element> {
   return (await database.collection('elements').find({ id }).toArray())[0];
 }
 export async function getSimpleElement(id: number) {
@@ -122,8 +122,14 @@ export async function getSimpleElement(id: number) {
       .toArray()
   )[0];
 }
+export async function getFullElement(id: number): Promise<Element> {
+  return (await database.collection('elements').find({ id }).toArray())[0];
+}
 export async function recipeExists(parent1: number, parent2: number) {
   return (await database.collection('recipes').find({ parent1, parent2 }).count()) === 1;
+}
+export async function getRecipe(id: number): Promise<Recipe> {
+  return (await database.collection('recipes').find({ child: id }).toArray())[0];
 }
 export async function getChildId(parent1: number, parent2: number) {
   return (
@@ -297,4 +303,30 @@ export function setupDatabase() {
     ensureDefaultElement(3, 'Fire', 'orange');
     ensureDefaultElement(4, 'Water', 'blue');
   });
+}
+
+export async function getSankeyDataRecursive(
+  elementId: number
+): Promise<[string, string, number][]> {
+  const recipe = await getRecipe(elementId);
+  const parent1 = await getElement(recipe.parent1);
+  const parent2 = await getElement(recipe.parent2);
+  const child = (await getElement(elementId)).name;
+
+  let returnArray: [string, string, number][] = [];
+
+  returnArray.push([parent1.name, child, 1]);
+  returnArray.push([parent2.name, child, 1]);
+
+  if (parent1.id > 4) {
+    returnArray = returnArray.concat(await getSankeyDataRecursive(parent1.id));
+  }
+  if (parent2.id > 4) {
+    returnArray = returnArray.concat(await getSankeyDataRecursive(parent2.id));
+  }
+
+  return returnArray;
+}
+export async function getSankeyData(elementId: number) {
+  return await getSankeyDataRecursive(elementId);
 }

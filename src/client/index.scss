@@ -9,3 +9,30 @@ body {
   padding: 0;
 }
 
+#game-wrapper {
+  height: 100%;
+
+  display: flex;
+
+  #element-wrapper {
+    flex: 3 1;
+  }
+  #right-panel-wrapper {
+    flex: 1 1;
+
+    #right-panel {
+      position: sticky;
+      top: 1.5em;
+    }
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  #game-wrapper {
+    width: 100%;
+
+    #right-panel-wrapper {
+      display: none;
+    }
+  }
+}

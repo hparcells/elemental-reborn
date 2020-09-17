@@ -1,4 +1,4 @@
-import { app } from 'fullstack-system';
+import { io, app } from 'fullstack-system';
 import { config as setupDotEnv } from 'dotenv';
 import bodyParser from 'body-parser';
 
@@ -11,13 +11,27 @@ import {
   addSuggestion,
   getTopSuggestions,
   submitVote,
-  submitDownvote
+  submitDownvote,
+  getFullElement,
+  elementExists,
+  getElement,
+  getRecipe,
+  getSankeyData
 } from './database';
 import { verifyGoogleToken } from './google';
 
 setupDotEnv();
 
 setupDatabase();
+
+io.on('connection', function (socket) {
+  io.sockets.emit('player-count', Object.keys(io.sockets.sockets).length);
+
+  socket.on('disconnect', () => {
+    // Update th player count for everyone else.
+    io.sockets.emit('player-count', Object.keys(io.sockets.sockets).length);
+  });
+});
 
 app.use(bodyParser());
 
@@ -49,6 +63,10 @@ app.get('/api/get-element/:elementId', async (req, res) => {
   res.set({ Type: 'Element' });
   res.send(await getSimpleElement(Number(req.params.elementId)));
 });
+app.get('/api/get-full-element/:elementId', async (req, res) => {
+  res.set({ Type: 'Element' });
+  res.send(await getFullElement(Number(req.params.elementId)));
+});
 app.post('/api/suggest', async (req, res) => {
   if (req.headers.token && (await verifyGoogleToken(req.headers.token as string))) {
     addSuggestion(req.body.suggestion);
@@ -75,4 +93,23 @@ app.get('/api/downvote/:uuid', async (req, res) => {
     }
   }
   res.end();
+});
+
+app.get('/api/sankey/:elementId', async (req, res) => {
+  const elementId = Number(req.params.elementId);
+
+  if (elementExists(elementId)) {
+    res.send(await getSankeyData(elementId));
+  }
+  res.end();
+});
+
+app.get('/elemental.json', async (req, res) => {
+  res.send({
+    type: 'reborn',
+    name: 'Elemental Reborn Official',
+    googleAuth: {
+      clientId: '148901687072-c2otormactiabvs9iqacd751e7f62f9b.apps.googleusercontent.com'
+    }
+  });
 });

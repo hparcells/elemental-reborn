@@ -16,6 +16,7 @@ import {
   getRecipe,
   manualEarnElement
 } from '../logic/elements';
+import { getSankeyData, usePlayerCount } from '../logic/stats';
 import { getGameData } from '../logic/save';
 
 function Alert(props: AlertProps) {
@@ -34,6 +35,8 @@ function Game() {
   const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
 
+  const playerCount = usePlayerCount();
+
   const [mousePosition, ref] = useMousePosition(0, 0, 30);
 
   async function refreshData() {
@@ -49,6 +52,9 @@ function Game() {
   }, []);
 
   async function tryElement(beforeParent1: number, beforeParent2: number) {
+    // TODO: Delete this.
+    // console.log(await getSankeyData(69));
+
     const parent1 = Math.min(beforeParent1, beforeParent2);
     const parent2 = Math.max(beforeParent1, beforeParent2);
 
@@ -102,92 +108,115 @@ function Game() {
   }
 
   return (
-    <div ref={ref} style={{ width: '100vw', height: '100vh' }}>
-      <div style={{ padding: '0.5em' }}>
-        <p>
-          {elements.length}/{elementCount.total} (
-          {Number(((elements.length / elementCount.total) * 100).toFixed(2))}%)
-        </p>
-        {elements.length > 0 && obtainedColors.length > 0
-          ? obtainedColors.map((color) => {
-              return (
-                <div key={color}>
-                  <div
-                    style={{
-                      display: 'flex'
-                    }}
-                  >
-                    <p
+    <div ref={ref}>
+      <div id='game-wrapper'>
+        <div id='element-wrapper' style={{ padding: '0.5em' }}>
+          <p>
+            {elements.length}/{elementCount.total} (
+            {Number(((elements.length / elementCount.total) * 100).toFixed(2))}%)
+          </p>
+          {elements.length > 0 && obtainedColors.length > 0
+            ? obtainedColors.map((color) => {
+                return (
+                  <div key={color}>
+                    <div
                       style={{
-                        flexGrow: 1
+                        display: 'flex'
                       }}
                     >
-                      {capitalize(color)} (
-                      {
-                        elements.filter((element: SimpleElement) => {
-                          return element.color === color;
-                        }).length
-                      }
-                      /{elementCount[color]})
-                    </p>
-                    <p
+                      <p
+                        style={{
+                          flexGrow: 1
+                        }}
+                      >
+                        {capitalize(color)} (
+                        {
+                          elements.filter((element: SimpleElement) => {
+                            return element.color === color;
+                          }).length
+                        }
+                        /{elementCount[color]})
+                      </p>
+                      <p
+                        style={{
+                          marginRight: '1em'
+                        }}
+                      >
+                        {(
+                          (elements.filter((element: SimpleElement) => {
+                            return element.color === color;
+                          }).length /
+                            elementCount[color]) *
+                          100
+                        ).toFixed(2)}
+                        %
+                      </p>
+                    </div>
+                    <div
+                      id={color}
                       style={{
-                        marginRight: '1em'
+                        display: 'flex',
+                        margin: '1em 0px',
+                        flexWrap: 'wrap',
+                        marginTop: '0px'
                       }}
                     >
-                      {(
-                        (elements.filter((element: SimpleElement) => {
+                      {elements
+                        .filter((element: SimpleElement) => {
                           return element.color === color;
-                        }).length /
-                          elementCount[color]) *
-                        100
-                      ).toFixed(2)}
-                      %
-                    </p>
+                        })
+                        .map((element: SimpleElement) => {
+                          return (
+                            <Element
+                              key={element.id}
+                              element={element}
+                              handleElementClick={handleElementClick}
+                            />
+                          );
+                        })}
+                    </div>
                   </div>
-                  <div
-                    id={color}
-                    style={{
-                      display: 'flex',
-                      margin: '1em 0px',
-                      flexWrap: 'wrap',
-                      marginTop: '0px'
-                    }}
-                  >
-                    {elements
-                      .filter((element: SimpleElement) => {
-                        return element.color === color;
-                      })
-                      .map((element: SimpleElement) => {
-                        return (
-                          <Element
-                            key={element.id}
-                            element={element}
-                            handleElementClick={handleElementClick}
-                          />
-                        );
-                      })}
-                  </div>
-                </div>
-              );
-            })
-          : 'Loading...'}
+                );
+              })
+            : 'Loading...'}
+        </div>
+
+        <div id='right-panel-wrapper'>
+          <div id='right-panel'>
+            <div
+              style={{
+                textAlign: 'center'
+              }}
+            >
+              <h1 style={{ marginBottom: '0px' }}>Elemental Reborn</h1>
+              <p style={{ marginTop: '0px' }}>{playerCount} Online</p>
+            </div>
+          </div>
+        </div>
+
+        {heldElement ? (
+          <Element
+            element={
+              elements.find((element) => {
+                return element.id === heldElement;
+              }) as SimpleElement
+            }
+            handleElementClick={handleElementClick}
+            style={{
+              position: 'absolute',
+              top: `${mousePosition.y && mousePosition.y}px`,
+              left: `${mousePosition.x && mousePosition.x}px`
+            }}
+          />
+        ) : null}
+
+        <Snackbar open={showSnackbar} autoHideDuration={5000} onClose={closeSnackbar}>
+          <Alert onClose={closeSnackbar} severity='success'>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </div>
-      {heldElement ? (
-        <Element
-          element={
-            elements.find((element) => {
-              return element.id === heldElement;
-            }) as SimpleElement
-          }
-          handleElementClick={handleElementClick}
-          style={{
-            position: 'absolute',
-            top: `${mousePosition.y && mousePosition.y}px`,
-            left: `${mousePosition.x && mousePosition.x}px`
-          }}
-        />
-      ) : null}
+
       {suggesting ? (
         <SuggestWindow
           suggestingData={suggestingData}
@@ -196,12 +225,6 @@ function Game() {
           openSnackbar={openSnackbar}
         />
       ) : null}
-
-      <Snackbar open={showSnackbar} autoHideDuration={5000} onClose={closeSnackbar}>
-        <Alert onClose={closeSnackbar} severity='success'>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </div>
   );
 }
