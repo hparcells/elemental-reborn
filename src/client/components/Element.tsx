@@ -50,7 +50,6 @@ function Element({
         }}
       >
         {editable ? (
-          // <EditableLabel text={element.name || 'Your Element'} onFocusOut={handleEditTextChange} />
           <EasyEdit type='text' onSave={handleEditTextChange} value={element.name} />
         ) : (
           element.name

@@ -14,10 +14,12 @@ function ElementInfo({
   closeElementInfo: () => void;
 }) {
   const [elementData, setElementData] = useState<Element>(null as any);
+  const [flowchartData, setFlowchartData] = useState<any>(null);
 
   useEffect(() => {
     (async () => {
       setElementData((await axios.get(`/api/get-full-element/${elementId}`)).data);
+      setFlowchartData((await axios.get(`/api/flowchart/${elementId}`)).data);
     })();
   }, []);
 
@@ -39,6 +41,8 @@ function ElementInfo({
               {format('yyyy-MM-dd, hh:mm:ss', new Date(elementData.createdOn))}
             </li>
           </ul>
+
+          {/* <p>{JSON.stringify(flowchartData)}</p> */}
         </div>
       ) : (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
