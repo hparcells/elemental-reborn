@@ -1,9 +1,12 @@
 import { app } from 'fullstack-system';
+import { Router } from 'express';
 
 import { getSimpleElement } from '../database/elements';
 import { getChildId, recipeExists } from '../database/recipes';
 
-app.get('/api/get-recipe/:parent1/:parent2', async (req, res) => {
+const router = Router();
+
+router.get('/api/get-recipe/:parent1/:parent2', async (req, res) => {
   if (await recipeExists(Number(req.params.parent1), Number(req.params.parent2))) {
     res.set({ Type: 'Element' });
     res.send(
@@ -16,3 +19,5 @@ app.get('/api/get-recipe/:parent1/:parent2', async (req, res) => {
   res.set({ Type: 'Suggest' });
   res.send();
 });
+
+export default router;

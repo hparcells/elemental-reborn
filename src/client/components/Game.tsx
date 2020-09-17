@@ -1,24 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import useMousePosition from '@react-hook/mouse-position';
+import { capitalize } from '@reverse/string';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
-import { capitalize } from '@reverse/string';
 
 import Element from './Element';
 import SuggestWindow from './SuggestWindow/SuggestWindow';
+import ElementInfo from './ElementInfo';
 
 import { ElementColor, ElementCount, SimpleElement } from '../../shared/types';
-import { SuggestingData } from '../logic/types';
+import { SuggestingData } from '../types';
 
-import {
-  getElementCount,
-  getObtainedColors,
-  getRecipe,
-  manualEarnElement
-} from '../logic/elements';
-import { usePlayerCount } from '../logic/stats';
+import { getObtainedColors, getRecipe, manualEarnElement } from '../logic/elements';
+import { getElementCount, usePlayerCount } from '../logic/stats';
 import { getGameData } from '../logic/save';
-import ElementInfo from './ElementInfo';
 
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
@@ -53,15 +48,25 @@ function Game() {
     })();
   }, []);
 
+  function openSnackbar(message: string) {
+    setSnackbarMessage(message);
+    setShowSnackbar(true);
+  }
+  function closeSnackbar() {
+    setShowSnackbar(false);
+  }
+
   async function tryElement(beforeParent1: number, beforeParent2: number) {
+    closeSnackbar();
+
     const parent1 = Math.min(beforeParent1, beforeParent2);
     const parent2 = Math.max(beforeParent1, beforeParent2);
 
     const recipeResult = await getRecipe(parent1, parent2);
-    if (recipeResult === 'element' || recipeResult === 'suggest') {
+    if (recipeResult.type === 'element' || recipeResult.type === 'suggest') {
       refreshData();
 
-      if (recipeResult === 'suggest') {
+      if (recipeResult.type === 'suggest') {
         setSuggesting(true);
         setSuggestingData({
           parent1: elements.filter((element) => {
@@ -73,6 +78,11 @@ function Game() {
           childName: 'Your Element',
           childColor: 'white'
         });
+      }
+    }
+    if (recipeResult.type === 'element' || recipeResult.type === 'element-no-refresh') {
+      if (recipeResult.element) {
+        openSnackbar(`Found: ${recipeResult.element.name}`);
       }
     }
   }
@@ -102,13 +112,6 @@ function Game() {
     setHeldElement(null as any);
   }
 
-  function openSnackbar(message: string) {
-    setSnackbarMessage(message);
-    setShowSnackbar(true);
-  }
-  function closeSnackbar() {
-    setShowSnackbar(false);
-  }
   function closeElementInfo() {
     setViewingElement(null as any);
   }
@@ -222,7 +225,12 @@ function Game() {
           />
         ) : null}
 
-        <Snackbar open={showSnackbar} autoHideDuration={5000} onClose={closeSnackbar}>
+        <Snackbar
+          open={showSnackbar}
+          autoHideDuration={5000}
+          onClose={closeSnackbar}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
           <Alert onClose={closeSnackbar} severity='success'>
             {snackbarMessage}
           </Alert>

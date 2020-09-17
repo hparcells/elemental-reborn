@@ -1,4 +1,4 @@
-import { ElementColor, SimpleElement } from '../../shared/types';
+import { ElementColor, SimpleElement } from '../shared/types';
 
 export interface SuggestingData {
   parent1: SimpleElement;

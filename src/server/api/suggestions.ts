@@ -1,4 +1,5 @@
 import { app } from 'fullstack-system';
+import { Router } from 'express';
 
 import { verifyGoogleToken } from '../google';
 
@@ -9,18 +10,20 @@ import {
   submitVote
 } from '../database/suggestions';
 
-app.post('/api/suggest', async (req, res) => {
+const router = Router();
+
+router.post('/api/suggest', async (req, res) => {
   if (req.headers.token && (await verifyGoogleToken(req.headers.token as string))) {
     addSuggestion(req.body.suggestion);
   }
   res.end();
 });
 
-app.get('/api/suggestions/:parent1/:parent2', async (req, res) => {
+router.get('/api/suggestions/:parent1/:parent2', async (req, res) => {
   res.send(await getTopSuggestions(Number(req.params.parent1), Number(req.params.parent2)));
 });
 
-app.get('/api/vote/:uuid', async (req, res) => {
+router.get('/api/vote/:uuid', async (req, res) => {
   if (req.headers.token) {
     const userId = await verifyGoogleToken(req.headers.token as string);
     if (userId && req.headers.pioneer) {
@@ -30,7 +33,7 @@ app.get('/api/vote/:uuid', async (req, res) => {
   res.end();
 });
 
-app.get('/api/downvote/:uuid', async (req, res) => {
+router.get('/api/downvote/:uuid', async (req, res) => {
   if (req.headers.token) {
     const userId = await verifyGoogleToken(req.headers.token as string);
     if (userId) {
@@ -39,3 +42,5 @@ app.get('/api/downvote/:uuid', async (req, res) => {
   }
   res.end();
 });
+
+export default router;

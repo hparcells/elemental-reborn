@@ -1,4 +1,4 @@
-import { io, app } from 'fullstack-system';
+import { io, app, rootRouter } from 'fullstack-system';
 import { config as setupDotEnv } from 'dotenv';
 import bodyParser from 'body-parser';
 
@@ -6,10 +6,10 @@ import setupLogin from './socket/login';
 
 import { setupDatabase } from './database';
 
-import './api/elements';
-import './api/recipes';
-import './api/stats';
-import './api/suggestions';
+import elementRouter from './api/elements';
+import recipeRouter from './api/recipes';
+import statRouter from './api/stats';
+import suggestionRouter from './api/suggestions';
 
 setupDotEnv();
 
@@ -20,6 +20,11 @@ io.on('connection', function (socket) {
 });
 
 app.use(bodyParser());
+
+app.use('', elementRouter);
+app.use('', recipeRouter);
+app.use('', statRouter);
+app.use('', suggestionRouter);
 
 app.get('/elemental.json', async (req, res) => {
   res.send({

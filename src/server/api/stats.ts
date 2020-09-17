@@ -1,13 +1,16 @@
 import { app } from 'fullstack-system';
+import { Router } from 'express';
 
 import { elementExists } from '../database/elements';
 import { getElementCount, getFlowchartData, getSankeyData } from '../database/stats';
 
-app.get('/api/element-count', async (req, res) => {
+const router = Router();
+
+router.get('/api/element-count', async (req, res) => {
   res.send(await getElementCount());
 });
 
-app.get('/api/sankey/:elementId', async (req, res) => {
+router.get('/api/sankey/:elementId', async (req, res) => {
   const elementId = Number(req.params.elementId);
 
   if (elementExists(elementId)) {
@@ -16,7 +19,7 @@ app.get('/api/sankey/:elementId', async (req, res) => {
   res.end();
 });
 
-app.get('/api/flowchart/:elementId', async (req, res) => {
+router.get('/api/flowchart/:elementId', async (req, res) => {
   const elementId = Number(req.params.elementId);
 
   if (elementExists(elementId)) {
@@ -24,3 +27,5 @@ app.get('/api/flowchart/:elementId', async (req, res) => {
   }
   res.end();
 });
+
+export default router;

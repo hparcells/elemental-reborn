@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { SuggestingData } from '../../logic/types';
+import { SuggestingData } from '../../types';
 import Element from '../Element';
 
 import { ELEMENT_COLOR_MAP, ElementColor } from '../../../shared/types';

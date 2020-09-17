@@ -2,17 +2,13 @@ import axios from 'axios';
 import { unique } from '@reverse/array';
 import { v4 as uuidv4 } from 'uuid';
 
-import { SimpleElement, ElementColor, ElementCount } from '../../shared/types';
-import { SuggestingData } from './types';
+import { SimpleElement, ElementColor } from '../../shared/types';
+import { SuggestingData } from '../types';
 
 import { getGameData } from './save';
 
 import { username } from '../components/App';
 
-export async function getElementCount(): Promise<ElementCount> {
-  const elementCountResponse = await axios.get('/api/element-count');
-  return elementCountResponse.data;
-}
 export async function getObtainedColors(): Promise<ElementColor[]> {
   return unique(
     (await getGameData()).map((element: SimpleElement) => {
@@ -20,7 +16,10 @@ export async function getObtainedColors(): Promise<ElementColor[]> {
     })
   );
 }
-function earnElement(response: any) {
+
+function earnElement(
+  response: any
+): { type: 'element' | 'element-no-refresh'; element?: SimpleElement } {
   const existingData = localStorage.getItem('elementalRebornData');
 
   if (!existingData) {
@@ -40,22 +39,26 @@ function earnElement(response: any) {
 
     document.getElementById(response.data.color)?.scrollIntoView({ behavior: 'smooth' });
 
-    return 'element';
+    return { type: 'element', element: response.data };
   }
-  return 'element-no-refresh';
-}
-export async function getRecipe(parent1: number, parent2: number) {
-  const response = await axios.get(`/api/get-recipe/${parent1}/${parent2}`);
-
-  if (response.headers.type === 'Element') {
-    return earnElement(response);
-  }
-  return 'suggest';
+  return { type: 'element-no-refresh', element: response.data };
 }
 export async function manualEarnElement(elementId: number) {
   const response = await axios.get(`/api/get-element/${elementId}`);
 
   earnElement(response);
+}
+
+export async function getRecipe(
+  parent1: number,
+  parent2: number
+): Promise<{ type: 'element' | 'element-no-refresh' | 'suggest'; element?: SimpleElement }> {
+  const response = await axios.get(`/api/get-recipe/${parent1}/${parent2}`);
+
+  if (response.headers.type === 'Element') {
+    return earnElement(response);
+  }
+  return { type: 'suggest' };
 }
 export async function suggestRecipe(suggestingData: SuggestingData, userToken: string) {
   await axios.post(
@@ -79,9 +82,11 @@ export async function suggestRecipe(suggestingData: SuggestingData, userToken: s
     }
   );
 }
+
 export async function getSuggestions(parent1: number, parent2: number) {
   return await axios.get(`/api/suggestions/${parent1}/${parent2}`);
 }
+
 export async function submitVote(uuid: string, userToken: string) {
   return (
     await axios.get(`/api/vote/${uuid}`, {
