@@ -7,24 +7,33 @@
 body {
   margin: 0;
   padding: 0;
+  user-select: none;
 }
 
 #game-wrapper {
   height: 100%;
-
   display: flex;
+}
+#element-wrapper {
+  flex: 2 1;
+}
+#right-panel-wrapper {
+  flex: 1 1;
+}
+#right-panel {
+  position: sticky;
+  top: 1.5em;
+}
+#element-drop {
+  background-color: #d1d1d1;
+  height: 75px;
+  margin: 0.5em;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  #element-wrapper {
-    flex: 3 1;
-  }
-  #right-panel-wrapper {
-    flex: 1 1;
-
-    #right-panel {
-      position: sticky;
-      top: 1.5em;
-    }
-  }
+  border: #000000 5px dashed;
 }
 
 @media only screen and (max-width: 1000px) {

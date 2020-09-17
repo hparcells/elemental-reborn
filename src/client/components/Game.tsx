@@ -16,8 +16,9 @@ import {
   getRecipe,
   manualEarnElement
 } from '../logic/elements';
-import { getSankeyData, usePlayerCount } from '../logic/stats';
+import { usePlayerCount } from '../logic/stats';
 import { getGameData } from '../logic/save';
+import ElementInfo from './ElementInfo';
 
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
@@ -30,7 +31,8 @@ function Game() {
   const [suggesting, setSuggesting] = useState<boolean>(false);
   const [suggestingData, setSuggestingData] = useState<SuggestingData>(null as any);
 
-  const [heldElement, setHeldElement] = useState<number | null>(null);
+  const [heldElement, setHeldElement] = useState<number>(null as any);
+  const [viewingElement, setViewingElement] = useState<number>(null as any);
 
   const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
@@ -52,9 +54,6 @@ function Game() {
   }, []);
 
   async function tryElement(beforeParent1: number, beforeParent2: number) {
-    // TODO: Delete this.
-    // console.log(await getSankeyData(69));
-
     const parent1 = Math.min(beforeParent1, beforeParent2);
     const parent2 = Math.max(beforeParent1, beforeParent2);
 
@@ -82,7 +81,7 @@ function Game() {
       setHeldElement(id);
       return;
     }
-    setHeldElement(null);
+    setHeldElement(null as any);
 
     tryElement(id, heldElement);
   }
@@ -98,6 +97,10 @@ function Game() {
       refreshData();
     }
   }
+  function handleElementDropClick() {
+    setViewingElement(heldElement);
+    setHeldElement(null as any);
+  }
 
   function openSnackbar(message: string) {
     setSnackbarMessage(message);
@@ -105,6 +108,9 @@ function Game() {
   }
   function closeSnackbar() {
     setShowSnackbar(false);
+  }
+  function closeElementInfo() {
+    setViewingElement(null as any);
   }
 
   return (
@@ -180,7 +186,6 @@ function Game() {
               })
             : 'Loading...'}
         </div>
-
         <div id='right-panel-wrapper'>
           <div id='right-panel'>
             <div
@@ -191,6 +196,13 @@ function Game() {
               <h1 style={{ marginBottom: '0px' }}>Elemental Reborn</h1>
               <p style={{ marginTop: '0px' }}>{playerCount} Online</p>
             </div>
+            {viewingElement ? (
+              <ElementInfo elementId={viewingElement} closeElementInfo={closeElementInfo} />
+            ) : (
+              <div id='element-drop' onClick={handleElementDropClick}>
+                <p>Drop Element Here to View Data</p>
+              </div>
+            )}
           </div>
         </div>
 

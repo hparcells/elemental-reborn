@@ -1,5 +1,6 @@
 import { MongoClient, Db } from 'mongodb';
 import assert from 'assert';
+import { unique } from '@reverse/array';
 
 import { Element, ElementColor, ElementCount, Recipe, Suggestion } from '../shared/types';
 
@@ -307,13 +308,13 @@ export function setupDatabase() {
 
 export async function getSankeyDataRecursive(
   elementId: number
-): Promise<[string, string, number][]> {
+): Promise<[string, string, number | string][]> {
   const recipe = await getRecipe(elementId);
   const parent1 = await getElement(recipe.parent1);
   const parent2 = await getElement(recipe.parent2);
   const child = (await getElement(elementId)).name;
 
-  let returnArray: [string, string, number][] = [];
+  let returnArray: [string, string, number | string][] = [];
 
   returnArray.push([parent1.name, child, 1]);
   returnArray.push([parent2.name, child, 1]);
@@ -328,5 +329,35 @@ export async function getSankeyDataRecursive(
   return returnArray;
 }
 export async function getSankeyData(elementId: number) {
-  return await getSankeyDataRecursive(elementId);
+  let sankeyData = await getSankeyDataRecursive(elementId);
+
+  sankeyData = unique(
+    sankeyData.map((sankeyDataRow) => {
+      return JSON.stringify(sankeyDataRow);
+    })
+  )
+    .map((stringedSankeyDataRow) => {
+      return {
+        stringedSankeyDataRow,
+        count: sankeyData
+          .map((sankeyDataRow) => {
+            return JSON.stringify(sankeyDataRow);
+          })
+          .filter((sankeyDataRow) => {
+            return sankeyDataRow === stringedSankeyDataRow;
+          }).length
+      };
+    })
+    .map((countedSankeyDataRow) => {
+      const parsedCountedSankeyDataRow = JSON.parse(countedSankeyDataRow.stringedSankeyDataRow);
+
+      return [
+        parsedCountedSankeyDataRow[0],
+        parsedCountedSankeyDataRow[1],
+        countedSankeyDataRow.count
+      ];
+    });
+
+  sankeyData.splice(0, 0, ['From', 'To', 'Weight']);
+  return sankeyData;
 }

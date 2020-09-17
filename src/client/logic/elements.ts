@@ -38,8 +38,7 @@ function earnElement(response: any) {
     data.push(response.data);
     localStorage.setItem('elementalRebornData', JSON.stringify(data));
 
-    // TODO: Test this.
-    document.getElementById(response.data.color)?.scrollIntoView();
+    document.getElementById(response.data.color)?.scrollIntoView({ behavior: 'smooth' });
 
     return 'element';
   }

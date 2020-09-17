@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2020-??-??
+### Added
+- Smooth scrolling when the game takes you to an element you created.
+- Elemental 4 implementation 👀.
+- Online player count.
+- You can now view who suggested and created elements by dropping an element into the drop zone on the right side.
+
+## Fixed
+- Fixed wacky margins.
+
 ## [1.2.0] - 2020-09-16
 ### Added
 - Added feedback when you vote for an element and it gets voted through.

@@ -2,6 +2,8 @@ import { io, app } from 'fullstack-system';
 import { config as setupDotEnv } from 'dotenv';
 import bodyParser from 'body-parser';
 
+import setupLogin from './handlers/login';
+
 import {
   setupDatabase,
   getSimpleElement,
@@ -14,8 +16,6 @@ import {
   submitDownvote,
   getFullElement,
   elementExists,
-  getElement,
-  getRecipe,
   getSankeyData
 } from './database';
 import { verifyGoogleToken } from './google';
@@ -25,12 +25,7 @@ setupDotEnv();
 setupDatabase();
 
 io.on('connection', function (socket) {
-  io.sockets.emit('player-count', Object.keys(io.sockets.sockets).length);
-
-  socket.on('disconnect', () => {
-    // Update th player count for everyone else.
-    io.sockets.emit('player-count', Object.keys(io.sockets.sockets).length);
-  });
+  setupLogin(socket);
 });
 
 app.use(bodyParser());
