@@ -33,6 +33,12 @@ export async function getElementName(elementName: string) {
       .collection('elements')
       .aggregate([
         {
+          $project: {
+            name: { $toLower: '$name' },
+            id: true
+          }
+        },
+        {
           $match: {
             name: elementName.toLowerCase()
           }

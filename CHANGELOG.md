@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Fixed
 - Fixed wacky margins.
+- Fixed possible null child value when voting through an element with the same name as an existing element.
 
 ## [1.2.0] - 2020-09-16
 ### Added

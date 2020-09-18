@@ -20,10 +20,19 @@ async function ensureDefaultElement(id: number, name: string, color: ElementColo
   }
 }
 export function setupDatabase() {
-  const client = new MongoClient(
-    `mongodb+srv://hparcells:${process.env.DATABASE_PASSWORD}@elementalreborncluster-b2kc5.mongodb.net/test?retryWrites=true&w=majority`,
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  );
+  let client: MongoClient;
+
+  if (process.env.NODE_ENV === 'production') {
+    client = new MongoClient(
+      `mongodb+srv://hparcells:${process.env.DATABASE_PASSWORD}@elementalreborncluster-b2kc5.mongodb.net/test?retryWrites=true&w=majority`,
+      { useNewUrlParser: true, useUnifiedTopology: true }
+    );
+  } else {
+    client = new MongoClient(
+      `mongodb+srv://hparcells:${process.env.DATABASE_PASSWORD}@elementalreborncluster.oqvwn.mongodb.net/test?retryWrites=true&w=majority`,
+      { useNewUrlParser: true, useUnifiedTopology: true }
+    );
+  }
 
   client.connect((error) => {
     assert.equal(null, error);
