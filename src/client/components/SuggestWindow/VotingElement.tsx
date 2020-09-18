@@ -28,12 +28,18 @@ function VotingElement({
     if (response === 'VOTED') {
       openSnackbar('Voted!');
     }
+    if (response === 'ALREADY-VOTED') {
+      openSnackbar('Already voted!');
+    }
   }
   async function handleDownvote() {
     const response = await submitDownvote(suggestion.uuid, userToken);
 
     if (response === 'VOTED') {
       openSnackbar('Downvoted!');
+    }
+    if (response === 'ALREADY-VOTED') {
+      openSnackbar('Already downvoted!');
     }
   }
 

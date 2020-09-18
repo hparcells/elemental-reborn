@@ -2,7 +2,12 @@ import { app } from 'fullstack-system';
 import { Router } from 'express';
 
 import { elementExists } from '../database/elements';
-import { getElementCount, getFlowchartData, getSankeyData } from '../database/stats';
+import {
+  getElementCount,
+  getElementPath,
+  getFlowchartData,
+  getSankeyData
+} from '../database/stats';
 
 const router = Router();
 
@@ -24,6 +29,15 @@ router.get('/api/flowchart/:elementId', async (req, res) => {
 
   if (elementExists(elementId)) {
     res.send(await getFlowchartData(elementId));
+  }
+  res.end();
+});
+
+router.get('/api/path/:elementId', async (req, res) => {
+  const elementId = Number(req.params.elementId);
+
+  if (elementExists(elementId)) {
+    res.send(await getElementPath(elementId));
   }
   res.end();
 });

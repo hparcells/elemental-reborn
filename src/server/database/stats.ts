@@ -3,7 +3,7 @@ import { unique } from '@reverse/array';
 import { database } from '.';
 
 import { ElementCount } from '../../shared/types';
-import { getElement } from './elements';
+import { getElement, getElementName } from './elements';
 import { getRecipe } from './recipes';
 
 export async function getElementCount(): Promise<ElementCount> {
@@ -132,4 +132,54 @@ export async function getSankeyData(elementId: number) {
 
 export async function getFlowchartData(elementId: number) {
   return 'Not implemented.';
+}
+
+async function getElementPathRecursive(elementId: number) {
+  let returnedArray: any = [];
+
+  const recipe = await getRecipe(elementId);
+  let parent1;
+  let parent2;
+
+  if (recipe.parent1 === recipe.parent2) {
+    const parent = await getElement(recipe.parent1);
+
+    parent1 = parent;
+    parent2 = parent;
+  } else {
+    parent1 = await getElement(recipe.parent1);
+    parent2 = await getElement(recipe.parent2);
+  }
+  const child = (await getElement(elementId)).name;
+
+  returnedArray.unshift([parent1.name, parent2.name, child]);
+
+  if (recipe.parent1 === recipe.parent2) {
+    if (parent1.id > 4) {
+      returnedArray = [...(await getElementPathRecursive(parent1.id)), ...returnedArray];
+    }
+  } else {
+    if (parent1.id > 4) {
+      returnedArray = [...(await getElementPathRecursive(parent1.id)), ...returnedArray];
+    }
+    if (parent2.id > 4) {
+      returnedArray = [...(await getElementPathRecursive(parent2.id)), ...returnedArray];
+    }
+  }
+
+  return returnedArray;
+}
+export async function getElementPath(elementId: number) {
+  if (elementId > 4) {
+    const elementPathData = await getElementPathRecursive(elementId);
+
+    return unique(
+      elementPathData.map((elementCombo: string[]) => {
+        return elementCombo.toString();
+      })
+    ).map((elementCombo: any) => {
+      return elementCombo.split(',');
+    });
+  }
+  return [['Starting Element', 'Starting Element', (await getElement(elementId)).name]];
 }

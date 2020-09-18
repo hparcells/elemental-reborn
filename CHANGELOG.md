@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Online player count.
 - You can now view who suggested and created elements by dropping an element into the drop zone on the right side.
 - Notifications every time you combine elements.
+- Notification when you upvote or downvote an element you already upvoted or downvoted.
+- You can now view the elements that make up any element.
 
 ## Fixed
 - Fixed wacky margins.

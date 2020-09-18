@@ -4,6 +4,8 @@ import axios from 'axios';
 import format from 'date-format';
 import { capitalize } from '@reverse/string';
 
+import { getElementPath } from '../logic/stats';
+
 import { Element } from '../../shared/types';
 
 function ElementInfo({
@@ -15,11 +17,13 @@ function ElementInfo({
 }) {
   const [elementData, setElementData] = useState<Element>(null as any);
   const [flowchartData, setFlowchartData] = useState<any>(null);
+  const [pathData, setPathData] = useState<any>(null as any);
 
   useEffect(() => {
     (async () => {
       setElementData((await axios.get(`/api/get-full-element/${elementId}`)).data);
-      setFlowchartData((await axios.get(`/api/flowchart/${elementId}`)).data);
+      // setFlowchartData((await axios.get(`/api/flowchart/${elementId}`)).data);
+      setPathData(await getElementPath(elementId));
     })();
   }, []);
 
@@ -42,7 +46,27 @@ function ElementInfo({
             </li>
           </ul>
 
-          {/* <p>{JSON.stringify(flowchartData)}</p> */}
+          <h2>Path</h2>
+          <ol>
+            {pathData ? (
+              pathData.map((pathDataItem: string[][], index: number) => {
+                return pathDataItem[0] === pathDataItem[1] ? (
+                  <li key={index}>
+                    <i>{pathDataItem[0]}</i> + <i>{pathDataItem[1]}</i> ={' '}
+                    <strong>{pathDataItem[2]}</strong>
+                  </li>
+                ) : (
+                  <li key={index}>
+                    {pathDataItem[0]} + {pathDataItem[1]} = <strong>{pathDataItem[2]}</strong>
+                  </li>
+                );
+              })
+            ) : (
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress color='primary' />
+              </div>
+            )}
+          </ol>
         </div>
       ) : (
         <div style={{ display: 'flex', justifyContent: 'center' }}>

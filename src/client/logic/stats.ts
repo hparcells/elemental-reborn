@@ -18,3 +18,7 @@ export function setPlayerCount(newPlayerCount: number) {
 export async function getSankeyData(elementId: number) {
   return (await axios.get(`/api/sankey/${elementId}`)).data;
 }
+
+export async function getElementPath(elementId: number) {
+  return (await axios.get(`/api/path/${elementId}`)).data;
+}
