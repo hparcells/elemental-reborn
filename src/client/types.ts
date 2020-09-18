@@ -6,3 +6,7 @@ export interface SuggestingData {
   childName: string;
   childColor: ElementColor;
 }
+export interface RecipeResponseData {
+  type: 'element' | 'element-no-refresh' | 'suggest';
+  element?: SimpleElement;
+}

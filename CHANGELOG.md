@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Elemental 4 implementation 👀.
 - Online player count.
 - You can now view who suggested and created elements by dropping an element into the drop zone on the right side.
+- Notifications every time you combine elements.
 
 ## Fixed
 - Fixed wacky margins.

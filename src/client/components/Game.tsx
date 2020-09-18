@@ -4,16 +4,17 @@ import { capitalize } from '@reverse/string';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
+import { getObtainedColors, manualEarnElement } from '../logic/elements';
+import { getElementCount, usePlayerCount } from '../logic/stats';
+import { getGameData } from '../logic/save';
+import { getRecipe } from '../logic/recipes';
+
 import Element from './Element';
 import SuggestWindow from './SuggestWindow/SuggestWindow';
 import ElementInfo from './ElementInfo';
 
 import { ElementColor, ElementCount, SimpleElement } from '../../shared/types';
 import { SuggestingData } from '../types';
-
-import { getObtainedColors, getRecipe, manualEarnElement } from '../logic/elements';
-import { getElementCount, usePlayerCount } from '../logic/stats';
-import { getGameData } from '../logic/save';
 
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
@@ -78,12 +79,16 @@ function Game() {
           childName: 'Your Element',
           childColor: 'white'
         });
+        return;
+      }
+
+      if (recipeResult.element) {
+        openSnackbar(`Discovered: ${recipeResult.element.name}`);
       }
     }
-    if (recipeResult.type === 'element' || recipeResult.type === 'element-no-refresh') {
-      if (recipeResult.element) {
-        openSnackbar(`Found: ${recipeResult.element.name}`);
-      }
+
+    if (recipeResult.type === 'element-no-refresh' && recipeResult.element) {
+      openSnackbar(`Rediscovered: ${recipeResult.element.name}`);
     }
   }
   async function handleElementClick(id: number) {

@@ -1,90 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { Button } from '@material-ui/core';
+
+import { getSuggestions, suggestRecipe } from '../../logic/suggestions';
+
+import Element from '../Element';
+import ColorSquare from './ColorSquare';
+import VotingElement from './VotingElement';
 
 import { SuggestingData } from '../../types';
-import Element from '../Element';
-
 import { ELEMENT_COLOR_MAP, ElementColor } from '../../../shared/types';
-import { Button } from '@material-ui/core';
-import { suggestRecipe, getSuggestions, submitVote, submitDownvote } from '../../logic/elements';
 
 import classes from './SuggestWindow.module.scss';
 
 import { userToken } from '../App';
-
-function ColorSquare({
-  color,
-  handleColorClick
-}: {
-  color: ElementColor;
-  handleColorClick: (color: ElementColor) => void;
-}) {
-  function handleClick() {
-    handleColorClick(color);
-  }
-
-  return (
-    <div
-      style={{
-        width: '32px',
-        height: '20px',
-        backgroundColor: ELEMENT_COLOR_MAP[color],
-        flexBasis: '10%'
-      }}
-      onClick={handleClick}
-    ></div>
-  );
-}
-function VotingElement({
-  suggestion,
-  openSnackbar,
-  handlePioneer
-}: {
-  suggestion: { uuid: string; childName: string; childColor: ElementColor };
-  openSnackbar: (message: string) => void;
-  handlePioneer: (id: number) => void;
-}) {
-  async function handleUpvote() {
-    const response = String(await submitVote(suggestion.uuid, userToken));
-
-    if (response.startsWith('PIONEER')) {
-      const id = response.substring(8);
-
-      openSnackbar(`Created: ${suggestion.childName}`);
-      handlePioneer(Number(id));
-    }
-    if (response === 'VOTED') {
-      openSnackbar('Voted!');
-    }
-  }
-  async function handleDownvote() {
-    const response = await submitDownvote(suggestion.uuid, userToken);
-
-    if (response === 'VOTED') {
-      openSnackbar('Downvoted!');
-    }
-  }
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <div onClick={handleUpvote}>
-        <Element
-          element={{
-            id: 0,
-            name: suggestion.childName,
-            color: suggestion.childColor
-          }}
-        />
-      </div>
-      <span
-        style={{ fontSize: '12px', textAlign: 'center', cursor: 'default' }}
-        onClick={handleDownvote}
-      >
-        Downvote
-      </span>
-    </div>
-  );
-}
 
 function SuggestWindow({
   suggestingData,
@@ -176,9 +104,9 @@ function SuggestWindow({
           <div>
             <p style={{ textAlign: 'center' }}>What should these create?</p>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <Element element={suggestingData.parent1} />
+              <Element element={suggestingData.parent1} noAnimate />
               <span style={{ fontSize: '36px', margin: '0px 0.5em' }}>+</span>
-              <Element element={suggestingData.parent2} />
+              <Element element={suggestingData.parent2} noAnimate />
             </div>
           </div>
         ) : null}
@@ -207,6 +135,7 @@ function SuggestWindow({
                   transition: 'background-color 0.25s'
                 }}
                 editable
+                noAnimate
                 handleEditTextChange={handleEditTextChange}
               />
             )}

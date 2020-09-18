@@ -1,13 +1,10 @@
 import axios from 'axios';
 import { unique } from '@reverse/array';
-import { v4 as uuidv4 } from 'uuid';
 
 import { SimpleElement, ElementColor } from '../../shared/types';
-import { SuggestingData } from '../types';
+import { RecipeResponseData } from '../types';
 
 import { getGameData } from './save';
-
-import { username } from '../components/App';
 
 export async function getObtainedColors(): Promise<ElementColor[]> {
   return unique(
@@ -17,9 +14,7 @@ export async function getObtainedColors(): Promise<ElementColor[]> {
   );
 }
 
-function earnElement(
-  response: any
-): { type: 'element' | 'element-no-refresh'; element?: SimpleElement } {
+export function earnElement(response: any): RecipeResponseData {
   const existingData = localStorage.getItem('elementalRebornData');
 
   if (!existingData) {
@@ -47,57 +42,4 @@ export async function manualEarnElement(elementId: number) {
   const response = await axios.get(`/api/get-element/${elementId}`);
 
   earnElement(response);
-}
-
-export async function getRecipe(
-  parent1: number,
-  parent2: number
-): Promise<{ type: 'element' | 'element-no-refresh' | 'suggest'; element?: SimpleElement }> {
-  const response = await axios.get(`/api/get-recipe/${parent1}/${parent2}`);
-
-  if (response.headers.type === 'Element') {
-    return earnElement(response);
-  }
-  return { type: 'suggest' };
-}
-export async function suggestRecipe(suggestingData: SuggestingData, userToken: string) {
-  await axios.post(
-    '/api/suggest',
-    {
-      suggestion: {
-        uuid: uuidv4(),
-        suggestedBy: username,
-        parent1: suggestingData.parent1.id,
-        parent2: suggestingData.parent2.id,
-        childName: suggestingData.childName,
-        childColor: suggestingData.childColor,
-        upvotes: [],
-        downvotes: []
-      }
-    },
-    {
-      headers: {
-        Token: userToken
-      }
-    }
-  );
-}
-
-export async function getSuggestions(parent1: number, parent2: number) {
-  return await axios.get(`/api/suggestions/${parent1}/${parent2}`);
-}
-
-export async function submitVote(uuid: string, userToken: string) {
-  return (
-    await axios.get(`/api/vote/${uuid}`, {
-      headers: { Token: userToken, Pioneer: username }
-    })
-  ).data;
-}
-export async function submitDownvote(uuid: string, userToken: string) {
-  return (
-    await axios.get(`/api/downvote/${uuid}`, {
-      headers: { Token: userToken }
-    })
-  ).data;
 }

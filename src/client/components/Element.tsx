@@ -8,15 +8,17 @@ import { SimpleElement, ELEMENT_COLOR_MAP } from '../../shared/types';
 function Element({
   element,
   editable,
+  noAnimate,
   handleEditTextChange,
   handleElementClick,
   style
 }: {
   element: SimpleElement;
   editable?: boolean;
+  noAnimate?: boolean;
   handleEditTextChange?: (text: string) => void;
   handleElementClick?: (id: number) => void;
-  style?: any;
+  style?: React.CSSProperties;
 }) {
   function handleClick() {
     if (handleElementClick) {
@@ -41,6 +43,7 @@ function Element({
         ...style
       }}
       onClick={handleClick}
+      className={noAnimate ? '' : 'animate-in'}
     >
       <span
         style={{
