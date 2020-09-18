@@ -175,10 +175,10 @@ export async function getElementPath(elementId: number) {
 
     return unique(
       elementPathData.map((elementCombo: string[]) => {
-        return elementCombo.toString();
+        return JSON.stringify(elementCombo);
       })
     ).map((elementCombo: any) => {
-      return elementCombo.split(',');
+      return JSON.parse(elementCombo);
     });
   }
   return [['Starting Element', 'Starting Element', (await getElement(elementId)).name]];
