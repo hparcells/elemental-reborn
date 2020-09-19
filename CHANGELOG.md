@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.4.0] - 2020-??-??
 ### Added
 - Live element feed. See elements as soon as they are added.
+- Voting now check the amount of downvotes subtracted from the upvote count.
 
 ## [1.3.0] - 2020-09-20
 ### Added

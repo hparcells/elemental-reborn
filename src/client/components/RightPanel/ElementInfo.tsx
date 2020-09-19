@@ -39,7 +39,7 @@ function ElementInfo({
             {elementData.name} (#{elementData.id}) - {capitalize(elementData.color)}
           </h1>
           <ul>
-            <li>Suggested by {elementData.suggestedBy}</li>
+            {elementData.suggestedBy && <li>Suggested by {elementData.suggestedBy}</li>}
             <li>
               Pioneered by {elementData.pioneer} at{' '}
               {format('yyyy-MM-dd, hh:mm:ss', new Date(elementData.createdOn))}

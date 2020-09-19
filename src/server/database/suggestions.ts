@@ -63,8 +63,36 @@ async function getSuggestion(uuid: string): Promise<Suggestion> {
 }
 
 async function getUpvotes(uuid: string) {
-  return ((await database.collection('suggestions').find({ uuid }).toArray())[0] as Suggestion)
-    .upvotes.length;
+  return (
+    await database
+      .collection('suggestions')
+      .aggregate([
+        {
+          $match: {
+            uuid
+          }
+        },
+        {
+          $addFields: {
+            upvoteCount: {
+              $size: '$upvotes'
+            },
+            downvoteCount: {
+              $size: '$downvotes'
+            }
+          }
+        },
+        {
+          $addFields: {
+            totalVotes: {
+              $subtract: ['$upvoteCount', '$downvoteCount']
+            }
+          }
+        }
+      ])
+      .project({ _id: false, totalVotes: true })
+      .toArray()
+  )[0].totalVotes;
 }
 async function endVoting(uuid: string, parent1: number, parent2: number, pioneer: string) {
   const winningSuggestion = await getSuggestion(uuid);
