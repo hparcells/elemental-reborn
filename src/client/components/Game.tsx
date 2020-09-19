@@ -64,7 +64,7 @@ function Game() {
     setSuggestingData(null as any);
 
     if (id) {
-      manualEarnElement(id);
+      await manualEarnElement(id);
       refreshData();
     }
   }
