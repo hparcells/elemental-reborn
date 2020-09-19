@@ -2,8 +2,8 @@ import { unique } from '@reverse/array';
 
 import { database } from '.';
 
-import { ElementCount } from '../../shared/types';
-import { getElement, getElementName } from './elements';
+import { MostRecentElement, ElementCount, Element } from '../../shared/types';
+import { getElement } from './elements';
 import { getRecipe } from './recipes';
 
 export async function getElementCount(): Promise<ElementCount> {
@@ -182,4 +182,38 @@ export async function getElementPath(elementId: number) {
     });
   }
   return [['Starting Element', 'Starting Element', (await getElement(elementId)).name]];
+}
+
+export async function getMostRecentElements(count: number): Promise<MostRecentElement[]> {
+  return Promise.all(
+    (
+      await database
+        .collection('elements')
+        .aggregate([
+          {
+            $match: {
+              id: { $gt: 4 }
+            }
+          },
+          {
+            $sort: {
+              createdOn: -1
+            }
+          },
+          {
+            $limit: count
+          }
+        ])
+        .toArray()
+    ).map(async (element: Element) => {
+      return {
+        id: element.id,
+        name: element.name,
+        color: element.color,
+        createdOn: element.createdOn,
+        parent1: await getElement((await getRecipe(element.id)).parent1),
+        parent2: await getElement((await getRecipe(element.id)).parent2)
+      };
+    })
+  );
 }

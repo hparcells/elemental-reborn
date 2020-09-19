@@ -3,6 +3,7 @@ import { config as setupDotEnv } from 'dotenv';
 import bodyParser from 'body-parser';
 
 import setupLogin from './socket/login';
+import setupStats from './socket/stats';
 
 import { setupDatabase } from './database';
 
@@ -17,6 +18,7 @@ setupDatabase();
 
 io.on('connection', function (socket) {
   setupLogin(socket);
+  setupStats(socket);
 });
 
 app.use(bodyParser());

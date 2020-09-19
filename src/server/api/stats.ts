@@ -6,6 +6,7 @@ import {
   getElementCount,
   getElementPath,
   getFlowchartData,
+  getMostRecentElements,
   getSankeyData
 } from '../database/stats';
 
@@ -40,6 +41,16 @@ router.get('/api/path/:elementId', async (req, res) => {
     res.send(await getElementPath(elementId));
   }
   res.end();
+});
+
+router.get('/api/most-recent/:count', async (req, res) => {
+  const count = Number(req.params.count);
+
+  if (!isNaN(count)) {
+    res.send(await getMostRecentElements(count));
+    return;
+  }
+  res.send([]);
 });
 
 export default router;

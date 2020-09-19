@@ -4,9 +4,9 @@ import axios from 'axios';
 import format from 'date-format';
 import { capitalize } from '@reverse/string';
 
-import { getElementPath } from '../logic/stats';
+import { getElementPath } from '../../logic/stats';
 
-import { Element } from '../../shared/types';
+import { Element } from '../../../shared/types';
 
 function ElementInfo({
   elementId,
@@ -16,7 +16,7 @@ function ElementInfo({
   closeElementInfo: () => void;
 }) {
   const [elementData, setElementData] = useState<Element>(null as any);
-  const [flowchartData, setFlowchartData] = useState<any>(null);
+  // const [flowchartData, setFlowchartData] = useState<any>(null);
   const [pathData, setPathData] = useState<any>(null as any);
 
   useEffect(() => {

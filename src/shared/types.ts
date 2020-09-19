@@ -39,6 +39,7 @@ export interface Suggestion {
   /** Array of user IDs from people who downvoted. */
   downvotes: string[];
 }
+
 /** Client stored element data. */
 export interface SimpleElement {
   /** Unique number ID of this element. */
@@ -59,6 +60,16 @@ export interface Element extends SimpleElement {
   /** Time created. */
   createdOn: number;
 }
+/** Data for displaying the most recent element. */
+export interface MostRecentElement extends SimpleElement {
+  /** Time created. */
+  createdOn: number;
+  /** Parent one element. */
+  parent1: Element;
+  /** Parent two element. */
+  parent2: Element;
+}
+
 /** A recipe for an element. */
 export interface Recipe {
   /** Parent element ID that will make this element. */

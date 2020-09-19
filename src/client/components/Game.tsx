@@ -11,7 +11,7 @@ import { getRecipe } from '../logic/recipes';
 
 import Element from './Element';
 import SuggestWindow from './SuggestWindow/SuggestWindow';
-import ElementInfo from './ElementInfo';
+import RightPanel from './RightPanel/RightPanel';
 
 import { ElementColor, ElementCount, SimpleElement } from '../../shared/types';
 import { SuggestingData } from '../types';
@@ -24,16 +24,8 @@ function Game() {
   const [elements, setElements] = useState<SimpleElement[]>([]);
   const [elementCount, setElementCount] = useState<ElementCount>('Fetching...' as any);
   const [obtainedColors, setObtainedColors] = useState<ElementColor[]>([]);
-  const [suggesting, setSuggesting] = useState<boolean>(false);
-  const [suggestingData, setSuggestingData] = useState<SuggestingData>(null as any);
 
   const [heldElement, setHeldElement] = useState<number>(null as any);
-  const [viewingElement, setViewingElement] = useState<number>(null as any);
-
-  const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
-  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
-
-  const playerCount = usePlayerCount();
 
   const [mousePosition, ref] = useMousePosition(0, 0, 30);
 
@@ -43,11 +35,16 @@ function Game() {
     setElements(await getGameData());
     setObtainedColors(await getObtainedColors());
   }
+
   useEffect(() => {
     (async () => {
       refreshData();
     })();
   }, []);
+
+  // Snackbar
+  const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
 
   function openSnackbar(message: string) {
     setSnackbarMessage(message);
@@ -57,6 +54,24 @@ function Game() {
     setShowSnackbar(false);
   }
 
+  // Suggest Window
+  const [suggesting, setSuggesting] = useState<boolean>(false);
+  const [suggestingData, setSuggestingData] = useState<SuggestingData>(null as any);
+
+  function handleSuggestingDataChange(suggestingData: SuggestingData) {
+    setSuggestingData(suggestingData);
+  }
+  async function endSuggesting(id?: number) {
+    setSuggesting(false);
+    setSuggestingData(null as any);
+
+    if (id) {
+      manualEarnElement(id);
+      refreshData();
+    }
+  }
+
+  // Elements
   async function tryElement(beforeParent1: number, beforeParent2: number) {
     closeSnackbar();
 
@@ -100,23 +115,14 @@ function Game() {
 
     tryElement(id, heldElement);
   }
-  function handleSuggestingDataChange(suggestingData: SuggestingData) {
-    setSuggestingData(suggestingData);
-  }
-  async function endSuggesting(id?: number) {
-    setSuggesting(false);
-    setSuggestingData(null as any);
 
-    if (id) {
-      manualEarnElement(id);
-      refreshData();
-    }
-  }
+  // Right Panel
+  const [viewingElement, setViewingElement] = useState<number>(null as any);
+
   function handleElementDropClick() {
     setViewingElement(heldElement);
     setHeldElement(null as any);
   }
-
   function closeElementInfo() {
     setViewingElement(null as any);
   }
@@ -194,25 +200,12 @@ function Game() {
               })
             : 'Loading...'}
         </div>
-        <div id='right-panel-wrapper'>
-          <div id='right-panel'>
-            <div
-              style={{
-                textAlign: 'center'
-              }}
-            >
-              <h1 style={{ marginBottom: '0px' }}>Elemental Reborn</h1>
-              <p style={{ marginTop: '0px' }}>{playerCount} Online</p>
-            </div>
-            {viewingElement ? (
-              <ElementInfo elementId={viewingElement} closeElementInfo={closeElementInfo} />
-            ) : (
-              <div id='element-drop' onClick={handleElementDropClick}>
-                <p>Drop Element Here to View Data</p>
-              </div>
-            )}
-          </div>
-        </div>
+
+        <RightPanel
+          viewingElement={viewingElement}
+          handleElementDropClick={handleElementDropClick}
+          closeElementInfo={closeElementInfo}
+        />
 
         {heldElement ? (
           <Element
