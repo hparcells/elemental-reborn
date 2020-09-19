@@ -36,11 +36,15 @@ function RightPanel({
             <div id='element-drop' onClick={handleElementDropClick}>
               <p>Drop Element Here to View Data</p>
             </div>
+
             <div>
               <h2>Most Recent Elements</h2>
               {mostRecentElements.map((mostRecentElement) => {
                 return (
-                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <div
+                    style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    key={mostRecentElement.id}
+                  >
                     <Element element={mostRecentElement.parent1} noAnimate />
                     <span style={{ fontSize: '36px', margin: '0px 0.5em' }}>+</span>
                     <Element element={mostRecentElement.parent2} noAnimate />

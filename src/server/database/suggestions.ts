@@ -1,10 +1,12 @@
+import { io } from 'fullstack-system';
+
 import { database } from '.';
 
-import { Element, ElementColor, ElementCount, Recipe, Suggestion } from '../../shared/types';
+import { Suggestion } from '../../shared/types';
 
 import { elementExistsName, getElementName } from './elements';
 import { recipeExists } from './recipes';
-import { getElementCount } from './stats';
+import { getElementCount, getMostRecentElements } from './stats';
 
 async function suggestionExists(uuid: string) {
   return (await database.collection('suggestions').find({ uuid }).count()) === 1;
@@ -90,6 +92,12 @@ async function endVoting(uuid: string, parent1: number, parent2: number, pioneer
     child: newId
   });
   await database.collection('suggestions').deleteMany({ parent1, parent2 });
+
+  // Send the most recent elements to everyone.
+  io.sockets.emit('most-recent-elements', await getMostRecentElements(10));
+
+  // Send the total element count to everyone.
+  io.sockets.emit('element-count', await getElementCount());
 
   return `PIONEER-${newId}`;
 }

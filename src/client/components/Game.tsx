@@ -5,7 +5,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
 import { getObtainedColors, manualEarnElement } from '../logic/elements';
-import { getElementCount, usePlayerCount } from '../logic/stats';
+import { useElementCount } from '../logic/stats';
 import { getGameData } from '../logic/save';
 import { getRecipe } from '../logic/recipes';
 
@@ -22,16 +22,14 @@ function Alert(props: AlertProps) {
 
 function Game() {
   const [elements, setElements] = useState<SimpleElement[]>([]);
-  const [elementCount, setElementCount] = useState<ElementCount>('Fetching...' as any);
   const [obtainedColors, setObtainedColors] = useState<ElementColor[]>([]);
-
   const [heldElement, setHeldElement] = useState<number>(null as any);
 
   const [mousePosition, ref] = useMousePosition(0, 0, 30);
 
-  async function refreshData() {
-    setElementCount(await getElementCount());
+  const elementCount = useElementCount();
 
+  async function refreshData() {
     setElements(await getGameData());
     setObtainedColors(await getObtainedColors());
   }
@@ -135,6 +133,7 @@ function Game() {
             {elements.length}/{elementCount.total} (
             {Number(((elements.length / elementCount.total) * 100).toFixed(2))}%)
           </p>
+
           {elements.length > 0 && obtainedColors.length > 0
             ? obtainedColors.map((color) => {
                 return (
