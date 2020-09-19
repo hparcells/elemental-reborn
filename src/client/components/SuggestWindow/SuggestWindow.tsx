@@ -48,7 +48,12 @@ function SuggestWindow({
       childColor: color
     });
 
-    setCanSubmit(suggestingData.childName !== 'Your Element');
+    setCanSubmit(
+      suggestingData.childName !== 'Your Element' &&
+        suggestingData.childName !== '' &&
+        suggestingData.childName.length !== 0 &&
+        suggestingData.childName.length <= 50
+    );
   }
   function handleEditTextChange(text: string) {
     if (!text) {
