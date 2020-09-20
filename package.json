@@ -1,7 +1,7 @@
 {
   "name": "elemental-reborn",
   "description": "Yet another Elemental 3 clone. Combine elements to make more elements.",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "scripts": {
     "start": "fullstack-system dev",
     "dev": "fullstack-system dev",
