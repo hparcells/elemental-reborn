@@ -1,6 +1,7 @@
-import { io, app, rootRouter } from 'fullstack-system';
+import { io, app } from 'fullstack-system';
 import { config as setupDotEnv } from 'dotenv';
 import bodyParser from 'body-parser';
+import * as Sentry from '@sentry/node';
 
 import setupLogin from './socket/login';
 import setupStats from './socket/stats';
@@ -13,6 +14,13 @@ import statRouter from './api/stats';
 import suggestionRouter from './api/suggestions';
 
 setupDotEnv();
+
+if (process.env.NODE_ENV === 'production') {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    tracesSampleRate: 1.0
+  });
+}
 
 setupDatabase();
 

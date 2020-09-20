@@ -1,7 +1,7 @@
 import React from 'react';
 import { best } from 'wcag-color';
-// import EditableLabel from 'react-inline-editing';
 import EasyEdit from 'react-easy-edit';
+import useFitText from 'use-fit-text';
 
 import { SimpleElement, ELEMENT_COLOR_MAP } from '../../shared/types';
 
@@ -20,6 +20,8 @@ function Element({
   handleElementClick?: (id: number) => void;
   style?: React.CSSProperties;
 }) {
+  const { fontSize, ref } = useFitText();
+
   function handleClick() {
     if (handleElementClick) {
       handleElementClick(element.id);
@@ -28,7 +30,9 @@ function Element({
 
   return (
     <div
+      ref={ref}
       style={{
+        fontSize: `min(${fontSize}, 12px)`,
         width: '75px',
         height: '75px',
         borderRadius: '5px',
@@ -48,7 +52,6 @@ function Element({
       <span
         style={{
           padding: '0.25em',
-          fontSize: '12px',
           color: best('#ffffff', '#000000', ELEMENT_COLOR_MAP[element.color])
         }}
       >

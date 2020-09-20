@@ -50,9 +50,7 @@ function SuggestWindow({
 
     setCanSubmit(
       suggestingData.childName !== 'Your Element' &&
-        suggestingData.childName !== '' &&
-        suggestingData.childName.length !== 0 &&
-        suggestingData.childName.length <= 50
+        !!/^([\x00-\x7F]){1,50}$/m.exec(suggestingData.childName.trim())
     );
   }
   function handleEditTextChange(text: string) {
@@ -61,9 +59,7 @@ function SuggestWindow({
         ...suggestingData,
         childName: 'Your Element'
       });
-      setCanSubmit(
-        text !== 'Your Element' && text !== '' && text.length !== 0 && text.length <= 50
-      );
+      setCanSubmit(text !== 'Your Element' && !!/^([\x00-\x7F]){1,50}$/m.exec(text.trim()));
       return;
     }
     handleSuggestingDataChange({
@@ -71,7 +67,7 @@ function SuggestWindow({
       childName: text
     });
 
-    setCanSubmit(text !== 'Your Element' && text !== '' && text.length !== 0 && text.length <= 50);
+    setCanSubmit(text !== 'Your Element' && !!/^([\x00-\x7F]){1,50}$/m.exec(text.trim()));
   }
   async function handleSuggest() {
     setCanSubmit(false);
