@@ -4,6 +4,7 @@ import assert from 'assert';
 import { ElementColor } from '../../shared/types';
 
 import { elementExists } from './elements';
+import { dbLog } from '../../util/logger';
 
 export let database: Db;
 
@@ -27,11 +28,13 @@ export function setupDatabase() {
       `mongodb+srv://hparcells:${process.env.DATABASE_PASSWORD}@elementalreborncluster-b2kc5.mongodb.net/test?retryWrites=true&w=majority`,
       { useNewUrlParser: true, useUnifiedTopology: true }
     );
+    dbLog('Connected into the production database.');
   } else {
     client = new MongoClient(
       `mongodb+srv://hparcells:${process.env.DATABASE_PASSWORD}@elementalreborncluster.oqvwn.mongodb.net/test?retryWrites=true&w=majority`,
       { useNewUrlParser: true, useUnifiedTopology: true }
-    );
+      );
+      dbLog('Connected into the development database.');
   }
 
   client.connect((error) => {

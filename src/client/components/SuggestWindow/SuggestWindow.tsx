@@ -7,8 +7,7 @@ import Element from '../Element';
 import ColorSquare from './ColorSquare';
 import VotingElement from './VotingElement';
 
-import { SuggestingData } from '../../types';
-import { ELEMENT_COLOR_MAP, ElementColor } from '../../../shared/types';
+import { ELEMENT_COLOR_MAP, ElementColor, SuggestingData } from '../../../shared/types';
 
 import classes from './SuggestWindow.module.scss';
 

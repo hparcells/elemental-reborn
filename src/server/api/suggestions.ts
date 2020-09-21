@@ -5,7 +5,9 @@ import { verifyGoogleToken } from '../google';
 
 import {
   addSuggestion,
+  getRandomLonelySuggestion,
   getTopSuggestions,
+  getUpAndComingSuggestion,
   submitDownvote,
   submitVote
 } from '../database/suggestions';
@@ -41,6 +43,13 @@ router.get('/api/downvote/:uuid', async (req, res) => {
     }
   }
   res.end();
+});
+
+router.get('/api/up-and-coming', async (req, res) => {
+  res.send(await getUpAndComingSuggestion());
+});
+router.get('/api/lonely', async (req, res) => {
+  res.send(await getRandomLonelySuggestion());
 });
 
 export default router;

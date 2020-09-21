@@ -17,7 +17,7 @@ router.get('/api/get-recipe/:parent1/:parent2', async (req, res) => {
     return;
   }
   res.set({ Type: 'Suggest' });
-  res.send();
+  res.send([]);
 });
 
 export default router;

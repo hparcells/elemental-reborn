@@ -16,12 +16,12 @@ router.get('/api/default-elements', async (req, res) => {
 
 router.get('/api/get-element/:elementId', async (req, res) => {
   res.set({ Type: 'Element' });
-  res.send(await getSimpleElement(Number(req.params.elementId)));
+  res.send((await getSimpleElement(Number(req.params.elementId))) || []);
 });
 
 router.get('/api/get-full-element/:elementId', async (req, res) => {
   res.set({ Type: 'Element' });
-  res.send(await getFullElement(Number(req.params.elementId)));
+  res.send((await getFullElement(Number(req.params.elementId))) || []);
 });
 
 export default router;

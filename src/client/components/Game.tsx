@@ -8,13 +8,18 @@ import { getObtainedColors, manualEarnElement } from '../logic/elements';
 import { useElementCount } from '../logic/stats';
 import { getGameData } from '../logic/save';
 import { getRecipe } from '../logic/recipes';
+import {
+  setIsSuggesting,
+  setSuggestingData,
+  useIsSuggesting,
+  useSuggestingData
+} from '../logic/suggestions';
 
 import Element from './Element';
 import SuggestWindow from './SuggestWindow/SuggestWindow';
 import RightPanel from './RightPanel/RightPanel';
 
-import { ElementColor, ElementCount, SimpleElement } from '../../shared/types';
-import { SuggestingData } from '../types';
+import { ElementColor, SimpleElement, SuggestingData } from '../../shared/types';
 
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
@@ -53,14 +58,14 @@ function Game() {
   }
 
   // Suggest Window
-  const [suggesting, setSuggesting] = useState<boolean>(false);
-  const [suggestingData, setSuggestingData] = useState<SuggestingData>(null as any);
+  const isSuggesting = useIsSuggesting();
+  const suggestingData = useSuggestingData();
 
   function handleSuggestingDataChange(suggestingData: SuggestingData) {
     setSuggestingData(suggestingData);
   }
   async function endSuggesting(id?: number) {
-    setSuggesting(false);
+    setIsSuggesting(false);
     setSuggestingData(null as any);
 
     if (id) {
@@ -81,7 +86,7 @@ function Game() {
       refreshData();
 
       if (recipeResult.type === 'suggest') {
-        setSuggesting(true);
+        setIsSuggesting(true);
         setSuggestingData({
           parent1: elements.filter((element) => {
             return element.id === parent1;
@@ -234,7 +239,7 @@ function Game() {
         </Snackbar>
       </div>
 
-      {suggesting ? (
+      {isSuggesting ? (
         <SuggestWindow
           suggestingData={suggestingData}
           handleSuggestingDataChange={handleSuggestingDataChange}

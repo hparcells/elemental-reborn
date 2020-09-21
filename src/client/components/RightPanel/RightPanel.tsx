@@ -1,8 +1,15 @@
 import React, { forwardRef } from 'react';
 import format from 'date-format';
 import FlipMove from 'react-flip-move';
+import { Button } from '@material-ui/core';
 
 import { useMostRecentElements, usePlayerCount } from '../../logic/stats';
+import {
+  setIsSuggesting,
+  setSuggestingData,
+  getRandomLonelySuggestion,
+  getUpAndComingSuggestion
+} from '../../logic/suggestions';
 
 import Element from '../Element';
 import ElementInfo from './ElementInfo';
@@ -18,6 +25,15 @@ function RightPanel({
 }) {
   const playerCount = usePlayerCount();
   const mostRecentElements = useMostRecentElements();
+
+  async function handleGetUpAndComingSuggestion() {
+    setSuggestingData(await getUpAndComingSuggestion());
+    setIsSuggesting(true);
+  }
+  async function handleGetRandomLonelySuggestion() {
+    setSuggestingData(await getRandomLonelySuggestion());
+    setIsSuggesting(true);
+  }
 
   return (
     <div id='right-panel-wrapper'>
@@ -36,6 +52,25 @@ function RightPanel({
           <div>
             <div id='element-drop' onClick={handleElementDropClick}>
               <p>Drop Element Here to View Data</p>
+            </div>
+
+            <div style={{ marginTop: '1em', display: 'flex' }}>
+              <Button
+                onClick={handleGetUpAndComingSuggestion}
+                variant='contained'
+                color='primary'
+                style={{ flexGrow: 1, marginRight: '0.5em' }}
+              >
+                Up and Coming Suggestion
+              </Button>
+              <Button
+                onClick={handleGetRandomLonelySuggestion}
+                variant='contained'
+                color='primary'
+                style={{ flexGrow: 1, marginLeft: '0.5em' }}
+              >
+                Random Lonely Suggestion
+              </Button>
             </div>
 
             <div>

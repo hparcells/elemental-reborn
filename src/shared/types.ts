@@ -20,6 +20,17 @@ export type ElementColor =
   | 'pink'
   | 'magenta';
 
+/** Suggestion data for the suggestion window. */
+export interface SuggestingData {
+  /** Parent element that will make this element. */
+  parent1: SimpleElement;
+  /** Parent element that will make this element. */
+  parent2: SimpleElement;
+  /** The name of the element that will be formed. */
+  childName: string;
+  /** The color of the element that will be formed. */
+  childColor: ElementColor;
+}
 /** Suggestion for a new element. */
 export interface Suggestion {
   /** UUID. */
@@ -33,7 +44,7 @@ export interface Suggestion {
   /** The name of the element that will be formed. */
   childName: string;
   /** The color of the element that will be formed. */
-  childColor: string;
+  childColor: ElementColor;
   /** Array of user IDs from people who votes. */
   upvotes: string[];
   /** Array of user IDs from people who downvoted. */

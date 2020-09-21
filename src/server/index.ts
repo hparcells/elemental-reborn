@@ -22,6 +22,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+// Setup the database.
 setupDatabase();
 
 io.on('connection', function (socket) {

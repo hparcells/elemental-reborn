@@ -2,9 +2,9 @@ import { io } from 'fullstack-system';
 
 import { database } from '.';
 
-import { Suggestion } from '../../shared/types';
+import { SuggestingData, Suggestion } from '../../shared/types';
 
-import { elementExistsName, getElementName } from './elements';
+import { elementExistsName, getElement, getElementName } from './elements';
 import { recipeExists } from './recipes';
 import { getElementCount, getMostRecentElements } from './stats';
 
@@ -178,4 +178,99 @@ export async function submitDownvote(uuid: string, userToken: string) {
     return 'VOTED';
   }
   return 'ALREADY-VOTED';
+}
+
+export async function getUpAndComingSuggestion() {
+  const suggestion = (
+    await database
+      .collection('suggestions')
+      .aggregate([
+        {
+          $addFields: {
+            upvoteCount: {
+              $size: '$upvotes'
+            },
+            downvoteCount: {
+              $size: '$downvotes'
+            }
+          }
+        },
+        {
+          $addFields: {
+            totalVotes: {
+              $subtract: ['$upvoteCount', '$downvoteCount']
+            }
+          }
+        },
+        {
+          $match: {
+            totalVotes: {
+              $lte: Number(process.env.VOTE_THRESHOLD) - 1,
+              $gte: Number(process.env.VOTE_THRESHOLD) - 3
+            }
+          }
+        },
+        {
+          $sample: {
+            size: 1
+          }
+        },
+        {
+          $project: {
+            upvoteCount: false,
+            downvoteCount: false
+          }
+        }
+      ])
+      .toArray()
+  )[0] as Suggestion;
+
+  return {
+    parent1: await getElement(suggestion.parent1),
+    parent2: await getElement(suggestion.parent2),
+    childName: suggestion.childName,
+    childColor: suggestion.childColor
+  };
+}
+export async function getRandomLonelySuggestion(): Promise<SuggestingData> {
+  const suggestion = (
+    await database
+      .collection('suggestions')
+      .aggregate([
+        {
+          $addFields: {
+            upvoteCount: {
+              $size: '$upvotes'
+            },
+            downvoteCount: {
+              $size: '$downvotes'
+            }
+          }
+        },
+        {
+          $match: {
+            $and: [{ upvoteCount: { $lte: 1 } }, { downvoteCount: { $lte: 1 } }]
+          }
+        },
+        {
+          $sample: {
+            size: 1
+          }
+        },
+        {
+          $project: {
+            upvoteCount: false,
+            downvoteCount: false
+          }
+        }
+      ])
+      .toArray()
+  )[0] as Suggestion;
+
+  return {
+    parent1: await getElement(suggestion.parent1),
+    parent2: await getElement(suggestion.parent2),
+    childName: suggestion.childName,
+    childColor: suggestion.childColor
+  };
 }
