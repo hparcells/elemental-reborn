@@ -6,7 +6,7 @@ import { SuggestingData } from '../../shared/types';
 
 import { username } from '../components/App';
 
-// Suggesting data.
+// Suggestion Window
 export const isSuggesting = new SimpleState<boolean>(false);
 export const useIsSuggesting = hookFromState(isSuggesting);
 export function setIsSuggesting(newIsSuggesting: boolean) {
@@ -16,6 +16,11 @@ export const suggestingData = new SimpleState<SuggestingData>(null as any);
 export const useSuggestingData = hookFromState(suggestingData);
 export function setSuggestingData(newSuggestingData: SuggestingData) {
   suggestingData.set(newSuggestingData);
+}
+export const canSuggest = new SimpleState<boolean>(false);
+export const useCanSuggest = hookFromState(canSuggest);
+export function setCanSuggest(newCanSuggest: boolean) {
+  canSuggest.set(newCanSuggest);
 }
 
 export async function suggestRecipe(suggestingData: SuggestingData, userToken: string) {

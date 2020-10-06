@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.5.0] - 2020-??-??
+## [1.5.1] - 2020-10-05
+### Fixed
+- Fixed a server error when trying to get a up and coming or lonely suggestion when there are none.
+- Client no longer shows the up and coming or the lonely suggestion element as non-submittable.
+
+## [1.5.0] - 2020-10-05
 ### Added
 - Added buttons to get an Up and Coming Suggestion and a Random Lonely Suggestion.
 

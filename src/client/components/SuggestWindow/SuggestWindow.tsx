@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@material-ui/core';
 
-import { getSuggestions, suggestRecipe } from '../../logic/suggestions';
+import {
+  getSuggestions,
+  suggestRecipe,
+  useCanSuggest,
+  setCanSuggest
+} from '../../logic/suggestions';
 
 import Element from '../Element';
 import ColorSquare from './ColorSquare';
@@ -24,7 +29,8 @@ function SuggestWindow({
   endSuggesting: (id?: number) => void;
   openSnackbar: (message: string) => void;
 }) {
-  const [canSubmit, setCanSubmit] = useState<boolean>(false);
+  const canSuggest = useCanSuggest();
+
   const [othersSuggestions, setOthersSuggestions] = useState<
     { uuid: string; childName: string; childColor: ElementColor }[]
   >(null as any);
@@ -47,7 +53,7 @@ function SuggestWindow({
       childColor: color
     });
 
-    setCanSubmit(
+    setCanSuggest(
       suggestingData.childName !== 'Your Element' &&
         !!/^([\x00-\x7F]){1,50}$/m.exec(suggestingData.childName.trim())
     );
@@ -58,7 +64,7 @@ function SuggestWindow({
         ...suggestingData,
         childName: 'Your Element'
       });
-      setCanSubmit(text !== 'Your Element' && !!/^([\x00-\x7F]){1,50}$/m.exec(text.trim()));
+      setCanSuggest(text !== 'Your Element' && !!/^([\x00-\x7F]){1,50}$/m.exec(text.trim()));
       return;
     }
     handleSuggestingDataChange({
@@ -66,13 +72,13 @@ function SuggestWindow({
       childName: text
     });
 
-    setCanSubmit(text !== 'Your Element' && !!/^([\x00-\x7F]){1,50}$/m.exec(text.trim()));
+    setCanSuggest(text !== 'Your Element' && !!/^([\x00-\x7F]){1,50}$/m.exec(text.trim()));
   }
   async function handleSuggest() {
-    setCanSubmit(false);
+    setCanSuggest(false);
     await suggestRecipe(suggestingData, userToken);
     endSuggesting();
-    setCanSubmit(true);
+    setCanSuggest(true);
     setOthersSuggestions(null as any);
     openSnackbar('Suggestion sent!');
   }
@@ -144,7 +150,7 @@ function SuggestWindow({
               color='primary'
               size='small'
               style={{ transform: 'scale(0.9)' }}
-              disabled={!canSubmit}
+              disabled={!canSuggest}
               onClick={handleSuggest}
             >
               Suggest

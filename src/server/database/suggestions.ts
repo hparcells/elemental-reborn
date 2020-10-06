@@ -225,14 +225,17 @@ export async function getUpAndComingSuggestion() {
       .toArray()
   )[0] as Suggestion;
 
-  return {
-    parent1: await getElement(suggestion.parent1),
-    parent2: await getElement(suggestion.parent2),
-    childName: suggestion.childName,
-    childColor: suggestion.childColor
-  };
+  if (suggestion) {
+    return {
+      parent1: await getElement(suggestion.parent1),
+      parent2: await getElement(suggestion.parent2),
+      childName: 'Your Element',
+      childColor: 'white'
+    };
+  }
+  return false;
 }
-export async function getRandomLonelySuggestion(): Promise<SuggestingData> {
+export async function getRandomLonelySuggestion() {
   const suggestion = (
     await database
       .collection('suggestions')
@@ -267,10 +270,13 @@ export async function getRandomLonelySuggestion(): Promise<SuggestingData> {
       .toArray()
   )[0] as Suggestion;
 
-  return {
-    parent1: await getElement(suggestion.parent1),
-    parent2: await getElement(suggestion.parent2),
-    childName: suggestion.childName,
-    childColor: suggestion.childColor
-  };
+  if (suggestion) {
+    return {
+      parent1: await getElement(suggestion.parent1),
+      parent2: await getElement(suggestion.parent2),
+      childName: 'Your Element',
+      childColor: 'white'
+    };
+  }
+  return false;
 }

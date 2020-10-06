@@ -209,6 +209,7 @@ function Game() {
           viewingElement={viewingElement}
           handleElementDropClick={handleElementDropClick}
           closeElementInfo={closeElementInfo}
+          openSnackbar={openSnackbar}
         />
 
         {heldElement ? (

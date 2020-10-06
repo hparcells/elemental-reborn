@@ -17,22 +17,36 @@ import ElementInfo from './ElementInfo';
 function RightPanel({
   viewingElement,
   handleElementDropClick,
-  closeElementInfo
+  closeElementInfo,
+  openSnackbar
 }: {
   viewingElement: number;
   handleElementDropClick: () => void;
   closeElementInfo: () => void;
+  openSnackbar: (message: string) => void;
 }) {
   const playerCount = usePlayerCount();
   const mostRecentElements = useMostRecentElements();
 
   async function handleGetUpAndComingSuggestion() {
-    setSuggestingData(await getUpAndComingSuggestion());
-    setIsSuggesting(true);
+    const suggestion = await getUpAndComingSuggestion();
+
+    if (suggestion) {
+      setSuggestingData(await getUpAndComingSuggestion());
+      setIsSuggesting(true);
+    } else {
+      openSnackbar('No more up and coming suggestions.');
+    }
   }
   async function handleGetRandomLonelySuggestion() {
-    setSuggestingData(await getRandomLonelySuggestion());
-    setIsSuggesting(true);
+    const suggestion = await getRandomLonelySuggestion();
+
+    if (suggestion) {
+      setSuggestingData(await getRandomLonelySuggestion());
+      setIsSuggesting(true);
+    } else {
+      openSnackbar('No more lonely suggestions.');
+    }
   }
 
   return (
