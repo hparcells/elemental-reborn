@@ -4,7 +4,10 @@
 ## Play
 [https://elemental.hparcells.tk/](https://elemental.hparcells.tk/)
 
-## Concepts
+## Discord
+[https://discord.gg/X9VyN42](https://discord.gg/X9VyN42)
+
+## Concept
 Elemental type games focus on combining elements to form new elements. Some of the games are community based (including this one) where the players of the game can decide which elements to create.
 
 ## About/History
