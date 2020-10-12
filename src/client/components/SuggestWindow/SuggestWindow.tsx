@@ -78,7 +78,6 @@ function SuggestWindow({
     setCanSuggest(false);
     await suggestRecipe(suggestingData, userToken);
     endSuggesting();
-    setCanSuggest(true);
     setOthersSuggestions(null as any);
     openSnackbar('Suggestion sent!');
   }
