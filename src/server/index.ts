@@ -25,12 +25,21 @@ if (process.env.NODE_ENV === 'production') {
 // Setup the database.
 setupDatabase();
 
+io.origins('*:*');
+
 io.on('connection', function (socket) {
   setupLogin(socket);
   setupStats(socket);
 });
 
 app.use(bodyParser());
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+
+  next();
+});
 
 app.use('', elementRouter);
 app.use('', recipeRouter);
@@ -41,6 +50,8 @@ app.get('/elemental.json', async (req, res) => {
   res.send({
     type: 'reborn',
     name: 'Elemental Reborn Official',
+    icon: 'https://elemental.hparcells.tk/icon/favicon-310.png',
+    description: "The server for Hunter's Elemental Reborn.",
     googleAuth: {
       clientId: '148901687072-c2otormactiabvs9iqacd751e7f62f9b.apps.googleusercontent.com'
     }
