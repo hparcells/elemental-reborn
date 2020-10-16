@@ -16,13 +16,11 @@ function ElementInfo({
   closeElementInfo: () => void;
 }) {
   const [elementData, setElementData] = useState<Element>(null as any);
-  // const [flowchartData, setFlowchartData] = useState<any>(null);
   const [pathData, setPathData] = useState<any>(null as any);
 
   useEffect(() => {
     (async () => {
       setElementData((await axios.get(`/api/get-full-element/${elementId}`)).data);
-      // setFlowchartData((await axios.get(`/api/flowchart/${elementId}`)).data);
       setPathData(await getElementPath(elementId));
     })();
   }, []);

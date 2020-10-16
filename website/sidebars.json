@@ -1,0 +1,22 @@
+{
+  "docs": {
+    "Elemental Reborn": [
+      "about",
+      "running-locally",
+      "data"
+    ]
+  },
+  "api-docs": {
+    "API Documentation": [
+      "api",
+      "element-forms",
+      "colors"
+    ],
+    "REST API": [
+      "api-elements",
+      "api-recipes",
+      "api-stats",
+      "api-suggestions"
+    ]
+  }
+}

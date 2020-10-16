@@ -1,37 +1,12 @@
-import { app } from 'fullstack-system';
 import { Router } from 'express';
 
 import { elementExists } from '../database/elements';
-import {
-  getElementCount,
-  getElementPath,
-  getFlowchartData,
-  getMostRecentElements,
-  getSankeyData
-} from '../database/stats';
+import { getElementCount, getElementPath, getMostRecentElements } from '../database/stats';
 
 const router = Router();
 
 router.get('/api/element-count', async (req, res) => {
   res.send(await getElementCount());
-});
-
-router.get('/api/sankey/:elementId', async (req, res) => {
-  const elementId = Number(req.params.elementId);
-
-  if (elementId > 0 && (await elementExists(elementId))) {
-    res.send(await getSankeyData(elementId));
-  }
-  res.end();
-});
-
-router.get('/api/flowchart/:elementId', async (req, res) => {
-  const elementId = Number(req.params.elementId);
-
-  if (elementId > 0 && (await elementExists(elementId))) {
-    res.send(await getFlowchartData(elementId));
-  }
-  res.end();
 });
 
 router.get('/api/path/:elementId', async (req, res) => {

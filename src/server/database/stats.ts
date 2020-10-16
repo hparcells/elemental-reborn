@@ -74,66 +74,6 @@ export async function getElementCount(): Promise<ElementCount> {
   };
 }
 
-export async function getSankeyDataRecursive(
-  elementId: number
-): Promise<[string, string, number | string][]> {
-  const recipe = await getRecipe(elementId);
-  const parent1 = await getElement(recipe.parent1);
-  const parent2 = await getElement(recipe.parent2);
-  const child = (await getElement(elementId)).name;
-
-  let returnArray: [string, string, number | string][] = [];
-
-  returnArray.push([parent1.name, child, 1]);
-  returnArray.push([parent2.name, child, 1]);
-
-  if (parent1.id > 4) {
-    returnArray = returnArray.concat(await getSankeyDataRecursive(parent1.id));
-  }
-  if (parent2.id > 4) {
-    returnArray = returnArray.concat(await getSankeyDataRecursive(parent2.id));
-  }
-
-  return returnArray;
-}
-export async function getSankeyData(elementId: number) {
-  let sankeyData = await getSankeyDataRecursive(elementId);
-
-  sankeyData = unique(
-    sankeyData.map((sankeyDataRow) => {
-      return JSON.stringify(sankeyDataRow);
-    })
-  )
-    .map((stringedSankeyDataRow) => {
-      return {
-        stringedSankeyDataRow,
-        count: sankeyData
-          .map((sankeyDataRow) => {
-            return JSON.stringify(sankeyDataRow);
-          })
-          .filter((sankeyDataRow) => {
-            return sankeyDataRow === stringedSankeyDataRow;
-          }).length
-      };
-    })
-    .map((countedSankeyDataRow) => {
-      const parsedCountedSankeyDataRow = JSON.parse(countedSankeyDataRow.stringedSankeyDataRow);
-
-      return [
-        parsedCountedSankeyDataRow[0],
-        parsedCountedSankeyDataRow[1],
-        countedSankeyDataRow.count
-      ];
-    });
-
-  sankeyData.splice(0, 0, ['From', 'To', 'Weight']);
-  return sankeyData;
-}
-
-export async function getFlowchartData(elementId: number) {
-  return 'Not implemented.';
-}
-
 async function getElementPathRecursive(elementId: number) {
   let returnedArray: any = [];
 
