@@ -13,19 +13,22 @@ import recipeRouter from './api/recipes';
 import statRouter from './api/stats';
 import suggestionRouter from './api/suggestions';
 
+import packageJson from '../../package.json';
+
 setupDotEnv();
 
 if (process.env.NODE_ENV === 'production') {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
-    tracesSampleRate: 1.0
+    tracesSampleRate: 1.0,
+    release: `elemental-reborn@${packageJson.version}`
   });
 }
 
 // Setup the database.
 setupDatabase();
 
-io.origins('*:*');
+// io.origins('*:*');
 
 io.on('connection', function (socket) {
   setupLogin(socket);

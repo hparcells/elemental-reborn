@@ -6,6 +6,7 @@ import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { usePlayerCount } from '../logic/stats';
 
 import packageJson from '../../../package.json';
+import { exception } from 'react-ga';
 
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
@@ -48,24 +49,6 @@ function Login({ handleLogin }: { handleLogin: (googleUser: any) => void }) {
           onSuccess={handleLogin}
           onFailure={onLoginError}
         />
-
-        <div style={{ textAlign: 'left' }}>
-          <h2>FAQ</h2>
-          <p>
-            <strong>Q</strong>: What happened to all the elements.
-          </p>
-          <p>
-            <strong>A</strong>: On 2020-09-18, I accidentally deleted all the recipes to the
-            elements with no way to get them back. The elements still existed, but none of them
-            would be creatable. The database was reset.
-          </p>
-        </div>
-
-        <p style={{ fontSize: '12px' }}>
-          This game is not officially affiliated with carykh's Elemental games, and none of your
-          personal information (e.g. email address, IPs, etc.) will be stored, <em>however</em>,
-          your Google profile name will be displayed if elements you submit get voted through.
-        </p>
       </div>
 
       <Snackbar open={hasError} autoHideDuration={5000} onClose={handleErrorClose}>
