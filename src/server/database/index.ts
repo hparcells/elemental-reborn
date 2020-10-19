@@ -33,8 +33,8 @@ export function setupDatabase() {
     client = new MongoClient(
       `mongodb+srv://hparcells:${process.env.DATABASE_PASSWORD}@elementalreborncluster.oqvwn.mongodb.net/test?retryWrites=true&w=majority`,
       { useNewUrlParser: true, useUnifiedTopology: true }
-      );
-      dbLog('Connected into the development database.');
+    );
+    dbLog('Connected into the development database.');
   }
 
   client.connect((error) => {

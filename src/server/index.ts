@@ -30,7 +30,7 @@ setupDatabase();
 
 // io.origins('*:*');
 
-io.on('connection', function (socket) {
+io.on('connection', (socket) => {
   setupLogin(socket);
   setupStats(socket);
 });
