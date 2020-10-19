@@ -32,7 +32,7 @@ function RightPanel({
     const suggestion = await getUpAndComingSuggestion();
 
     if (suggestion) {
-      setSuggestingData(await getUpAndComingSuggestion());
+      setSuggestingData(suggestion);
       setIsSuggesting(true);
     } else {
       openSnackbar('No more up and coming suggestions.');
@@ -42,7 +42,7 @@ function RightPanel({
     const suggestion = await getRandomLonelySuggestion();
 
     if (suggestion) {
-      setSuggestingData(await getRandomLonelySuggestion());
+      setSuggestingData(suggestion);
       setIsSuggesting(true);
     } else {
       openSnackbar('No more lonely suggestions.');
