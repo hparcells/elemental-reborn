@@ -5,6 +5,8 @@ import { getElementCount, getElementPath, getMostRecentElements } from '../datab
 
 const router = Router();
 
+const pathCache: { [type: number]: string[] } = {};
+
 router.get('/api/element-count', async (req, res) => {
   res.send(await getElementCount());
 });
@@ -13,7 +15,15 @@ router.get('/api/path/:elementId', async (req, res) => {
   const elementId = Number(req.params.elementId);
 
   if (elementId > 0 && (await elementExists(elementId))) {
-    res.send(await getElementPath(elementId));
+    if (pathCache.hasOwnProperty(elementId)) {
+      res.send(pathCache[elementId]);
+      return;
+    }
+
+    const elementPath = await getElementPath(elementId);
+    pathCache[elementId] = elementPath;
+    res.send(elementPath);
+
     return;
   }
   res.send([]);

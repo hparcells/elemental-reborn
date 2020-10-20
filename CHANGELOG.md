@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.6.0] - 2020-10-??
 ### Added
 - Guest Mode: Play without logging into your Google account. You will be unable to make any suggestions.
+- Path Caching: Making path finding for elements quicker if it's been queried for before.
 
 ### Changed
 - The "Login with Google" button has been swapped with a more visible button.
