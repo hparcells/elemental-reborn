@@ -2,17 +2,23 @@ import React, { useState } from 'react';
 import GoogleLogin from 'react-google-login';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import { Button } from '@material-ui/core';
 
 import { usePlayerCount } from '../logic/stats';
 
 import packageJson from '../../../package.json';
-import { exception } from 'react-ga';
 
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
 }
 
-function Login({ handleLogin }: { handleLogin: (googleUser: any) => void }) {
+function Login({
+  handleLogin,
+  handleGuestLogin
+}: {
+  handleLogin: (googleUser: any) => void;
+  handleGuestLogin: () => void;
+}) {
   const [hasError, setHasError] = useState<boolean>(false);
   const [error, setError] = useState<string>();
 
@@ -44,11 +50,46 @@ function Login({ handleLogin }: { handleLogin: (googleUser: any) => void }) {
           Yet another Elemental 3 clone. Combine elements together to form new elements. Login with
           Google below to get started.
         </p>
-        <GoogleLogin
-          clientId='148901687072-c2otormactiabvs9iqacd751e7f62f9b.apps.googleusercontent.com'
-          onSuccess={handleLogin}
-          onFailure={onLoginError}
-        />
+
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <GoogleLogin
+            clientId='148901687072-c2otormactiabvs9iqacd751e7f62f9b.apps.googleusercontent.com'
+            onSuccess={handleLogin}
+            onFailure={onLoginError}
+            style={{
+              marginRight: '0.5em'
+            }}
+            render={(renderProps) => {
+              return (
+                <Button
+                  onClick={renderProps.onClick}
+                  variant='contained'
+                  color='primary'
+                  style={{
+                    marginRight: '0.5em'
+                  }}
+                  disabled={renderProps.disabled}
+                >
+                  Login with Google
+                </Button>
+              );
+            }}
+          />
+          <Button
+            onClick={handleGuestLogin}
+            variant='contained'
+            color='primary'
+            style={{
+              marginLeft: '0.5em'
+            }}
+          >
+            Guest Login
+          </Button>
+        </div>
+
+        <p style={{ fontSize: '14px' }}>
+          Logging in as a guest, you will be unable to make any element suggestions.
+        </p>
       </div>
 
       <Snackbar open={hasError} autoHideDuration={5000} onClose={handleErrorClose}>

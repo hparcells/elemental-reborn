@@ -5,8 +5,6 @@ import { ElementColor } from '../../../shared/types';
 
 import { submitDownvote, submitVote } from '../../logic/suggestions';
 
-import { userToken } from '../App';
-
 function VotingElement({
   suggestion,
   openSnackbar,
@@ -17,7 +15,7 @@ function VotingElement({
   handlePioneer: (id: number) => void;
 }) {
   async function handleUpvote() {
-    const response = String(await submitVote(suggestion.uuid, userToken));
+    const response = String(await submitVote(suggestion.uuid));
 
     if (response.startsWith('PIONEER')) {
       const id = response.substring(8);
@@ -33,7 +31,7 @@ function VotingElement({
     }
   }
   async function handleDownvote() {
-    const response = await submitDownvote(suggestion.uuid, userToken);
+    const response = await submitDownvote(suggestion.uuid);
 
     if (response === 'VOTED') {
       openSnackbar('Downvoted!');

@@ -16,8 +16,6 @@ import { ELEMENT_COLOR_MAP, ElementColor, SuggestingData } from '../../../shared
 
 import classes from './SuggestWindow.module.scss';
 
-import { userToken } from '../App';
-
 function SuggestWindow({
   suggestingData,
   handleSuggestingDataChange,
@@ -76,7 +74,7 @@ function SuggestWindow({
   }
   async function handleSuggest() {
     setCanSuggest(false);
-    await suggestRecipe(suggestingData, userToken);
+    await suggestRecipe(suggestingData);
     endSuggesting();
     setOthersSuggestions(null as any);
     openSnackbar('Suggestion sent!');

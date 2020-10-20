@@ -4,7 +4,7 @@ import { hookFromState, SimpleState } from '@reverse/state';
 
 import { SuggestingData } from '../../shared/types';
 
-import { username } from '../components/App';
+import { login } from '../components/App';
 
 // Suggestion Window
 export const isSuggesting = new SimpleState<boolean>(false);
@@ -23,13 +23,13 @@ export function setCanSuggest(newCanSuggest: boolean) {
   canSuggest.set(newCanSuggest);
 }
 
-export async function suggestRecipe(suggestingData: SuggestingData, userToken: string) {
+export async function suggestRecipe(suggestingData: SuggestingData) {
   await axios.post(
     '/api/suggest',
     {
       suggestion: {
         uuid: uuidv4(),
-        suggestedBy: username,
+        suggestedBy: login.username,
         parent1: suggestingData.parent1.id,
         parent2: suggestingData.parent2.id,
         childName: suggestingData.childName,
@@ -40,7 +40,7 @@ export async function suggestRecipe(suggestingData: SuggestingData, userToken: s
     },
     {
       headers: {
-        Token: userToken
+        Token: login.token
       }
     }
   );
@@ -49,17 +49,17 @@ export async function getSuggestions(parent1: number, parent2: number) {
   return await axios.get(`/api/suggestions/${parent1}/${parent2}`);
 }
 
-export async function submitVote(uuid: string, userToken: string) {
+export async function submitVote(uuid: string) {
   return (
     await axios.get(`/api/vote/${uuid}`, {
-      headers: { Token: userToken, Pioneer: username }
+      headers: { Token: login.token, Pioneer: login.username }
     })
   ).data;
 }
-export async function submitDownvote(uuid: string, userToken: string) {
+export async function submitDownvote(uuid: string) {
   return (
     await axios.get(`/api/downvote/${uuid}`, {
-      headers: { Token: userToken }
+      headers: { Token: login.token }
     })
   ).data;
 }

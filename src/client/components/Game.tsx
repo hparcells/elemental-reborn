@@ -21,6 +21,8 @@ import RightPanel from './RightPanel/RightPanel';
 
 import { ElementColor, SimpleElement, SuggestingData } from '../../shared/types';
 
+import { login } from './App';
+
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
 }
@@ -86,18 +88,24 @@ function Game() {
       refreshData();
 
       if (recipeResult.type === 'suggest') {
-        setIsSuggesting(true);
-        setSuggestingData({
-          parent1: elements.filter((element) => {
-            return element.id === parent1;
-          })[0],
-          parent2: elements.filter((element) => {
-            return element.id === parent2;
-          })[0],
-          childName: 'Your Element',
-          childColor: 'white'
-        });
-        return;
+        if (login.loggedIn) {
+          setIsSuggesting(true);
+          setSuggestingData({
+            parent1: elements.filter((element) => {
+              return element.id === parent1;
+            })[0],
+            parent2: elements.filter((element) => {
+              return element.id === parent2;
+            })[0],
+            childName: 'Your Element',
+            childColor: 'white'
+          });
+          return;
+        }
+
+        openSnackbar(
+          'Cannot open suggestion window in guest mode. Refresh and login to suggest elements.'
+        );
       }
 
       if (recipeResult.element) {

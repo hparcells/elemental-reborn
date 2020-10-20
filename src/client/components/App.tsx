@@ -9,11 +9,14 @@ import { ElementCount, MostRecentElement } from '../../shared/types';
 import Login from './Login';
 import Game from './Game';
 
-export let username: string = null as any;
-export let userToken: string = null as any;
+export const login = {
+  loggedIn: false,
+  username: '',
+  token: ''
+};
 
 function App() {
-  const [token, setToken] = useState<string>();
+  const [access, setAccess] = useState<boolean>(false);
 
   useEffect(() => {
     function handleReceivePlayerCount(playerCount: number) {
@@ -38,13 +41,20 @@ function App() {
   }, []);
 
   function handleLogin(googleUser: any) {
-    setToken(googleUser.getAuthResponse().id_token);
-
-    userToken = googleUser.getAuthResponse().id_token;
-    username = googleUser.getBasicProfile().getName();
+    login.loggedIn = true;
+    login.username = googleUser.getBasicProfile().getName();
+    login.token = googleUser.getAuthResponse().id_token;
+    setAccess(true);
+  }
+  function handleGuestLogin() {
+    setAccess(true);
   }
 
-  return <>{token ? <Game /> : <Login handleLogin={handleLogin} />}</>;
+  return (
+    <>
+      {access ? <Game /> : <Login handleLogin={handleLogin} handleGuestLogin={handleGuestLogin} />}
+    </>
+  );
 }
 
 export default App;

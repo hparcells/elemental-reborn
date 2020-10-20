@@ -14,6 +14,8 @@ import {
 import Element from '../Element';
 import ElementInfo from './ElementInfo';
 
+import { login } from '../App';
+
 function RightPanel({
   viewingElement,
   handleElementDropClick,
@@ -74,6 +76,7 @@ function RightPanel({
                 variant='contained'
                 color='primary'
                 style={{ flexGrow: 1, marginRight: '0.5em' }}
+                disabled={!login.loggedIn}
               >
                 Up and Coming Suggestion
               </Button>
@@ -82,6 +85,7 @@ function RightPanel({
                 variant='contained'
                 color='primary'
                 style={{ flexGrow: 1, marginLeft: '0.5em' }}
+                disabled={!login.loggedIn}
               >
                 Random Lonely Suggestion
               </Button>

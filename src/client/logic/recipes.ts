@@ -2,7 +2,6 @@ import axios from 'axios';
 
 import { earnElement } from './elements';
 
-import { SimpleElement } from '../../shared/types';
 import { RecipeResponseData } from '../types';
 
 export async function getRecipe(parent1: number, parent2: number): Promise<RecipeResponseData> {
