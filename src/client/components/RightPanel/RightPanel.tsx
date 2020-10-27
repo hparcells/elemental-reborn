@@ -94,32 +94,36 @@ function RightPanel({
             <div>
               <h2>Most Recent Elements</h2>
               <FlipMove>
-                {mostRecentElements.map((mostRecentElement) => {
-                  return (
-                    <div
-                      style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                      key={mostRecentElement.id}
-                    >
-                      <Element element={mostRecentElement.parent1} noAnimate />
-                      <span style={{ fontSize: '36px', margin: '0px 0.5em' }}>+</span>
-                      <Element element={mostRecentElement.parent2} noAnimate />
-                      <span style={{ fontSize: '36px', margin: '0px 0.5em' }}>=</span>
-                      <Element element={mostRecentElement} noAnimate />
-
+                {mostRecentElements ? (
+                  mostRecentElements.map((mostRecentElement) => {
+                    return (
                       <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          marginLeft: '1em'
-                        }}
+                        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                        key={mostRecentElement.id}
                       >
-                        <span>{format('yyyy-MM-dd', new Date(mostRecentElement.createdOn))}</span>
-                        <span>{format('hh:mm:ss', new Date(mostRecentElement.createdOn))}</span>
+                        <Element element={mostRecentElement.parent1} noAnimate />
+                        <span style={{ fontSize: '36px', margin: '0px 0.5em' }}>+</span>
+                        <Element element={mostRecentElement.parent2} noAnimate />
+                        <span style={{ fontSize: '36px', margin: '0px 0.5em' }}>=</span>
+                        <Element element={mostRecentElement} noAnimate />
+
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            marginLeft: '1em'
+                          }}
+                        >
+                          <span>{format('yyyy-MM-dd', new Date(mostRecentElement.createdOn))}</span>
+                          <span>{format('hh:mm:ss', new Date(mostRecentElement.createdOn))}</span>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <p>Loading Element Feed...</p>
+                )}
               </FlipMove>
             </div>
           </div>

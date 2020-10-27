@@ -142,12 +142,16 @@ function Game() {
     <div ref={ref}>
       <div id='game-wrapper'>
         <div id='element-wrapper' style={{ padding: '0.5em' }}>
-          <p>
-            {elements.length}/{elementCount.total} (
-            {Number(((elements.length / elementCount.total) * 100).toFixed(2))}%)
-          </p>
+          {elementCount ? (
+            <p>
+              {elements.length}/{elementCount.total} (
+              {Number(((elements.length / elementCount.total) * 100).toFixed(2))}%)
+            </p>
+          ) : (
+            <p>Loading Element Count...</p>
+          )}
 
-          {elements.length > 0 && obtainedColors.length > 0
+          {elementCount && elements.length > 0 && obtainedColors.length > 0
             ? obtainedColors.map((color) => {
                 return (
                   <div key={color}>
@@ -210,7 +214,7 @@ function Game() {
                   </div>
                 );
               })
-            : 'Loading...'}
+            : 'Loading Game...'}
         </div>
 
         <RightPanel
