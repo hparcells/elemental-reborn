@@ -140,8 +140,13 @@ function Game() {
 
   return (
     <div ref={ref}>
-      <div id='game-wrapper'>
-        <div id='element-wrapper' style={{ padding: '0.5em' }}>
+      <div
+        id='game-wrapper'
+        style={{
+          overflowY: 'hidden'
+        }}
+      >
+        <div id='element-wrapper' style={{ padding: '0.5em', overflowY: 'scroll' }}>
           {elementCount ? (
             <p>
               {elements.length}/{elementCount.total} (
