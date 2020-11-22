@@ -2,7 +2,7 @@
 > Yet another Elemental 3 clone.
 
 ## Play
-[https://elemental.hparcells.tk/](https://elemental.hparcells.tk/)
+[https://elemental-reborn.tk/](https://elemental-reborn.tk/)
 
 ## Discord
 [https://discord.gg/X9VyN42](https://discord.gg/X9VyN42)
@@ -20,3 +20,5 @@ Because at the time Dave's Elemental 4 was down because of an upcoming remake, t
 Unfortunately, during development, I accidentally deleted the database (of 340 elements) full of the recipes by mistake. With no way to get these back, I decided to fully reset the database. As this was disappointing, this might of been a good thing, as even more players started playing the game, and the database soon grew to the size it was before in almost a day.
 
 On the 21st of September, I temporarily shut down the game for two weeks.
+
+Ever since, elements have continued to be added to the game, topping over 3,100.
